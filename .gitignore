@@ -1,0 +1,21 @@
+# secrets
+.env
+.env.local
+*credentials*.json
+*serviceAccount*.json
+
+# node
+node_modules/
+npm-debug.log*
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# build output
+dist/
+build/
+
+# OS
+.DS_Store
