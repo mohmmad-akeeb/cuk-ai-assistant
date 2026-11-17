@@ -11,7 +11,7 @@ import pytest
 from cuk_assistant.core.protocols.telemetry import (
     FailureDiagnosticCode,
 )
-from cuk_assistant.retrieval.coordinator import (
+from cuk_assistant.retrieval.subsystems.coordinator import (
     HybridRetrievalCoordinator,
     extract_circular_reference,
     format_where_filter,

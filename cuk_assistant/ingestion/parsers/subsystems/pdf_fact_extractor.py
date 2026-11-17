@@ -12,7 +12,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from cuk_assistant.ingestion.normalize.metadata_normalizer import (
+from cuk_assistant.ingestion.normalization.subsystems.metadata_normalizer import (
     extract_circular_reference,
     normalize_academic_year,
     normalize_iso_date,

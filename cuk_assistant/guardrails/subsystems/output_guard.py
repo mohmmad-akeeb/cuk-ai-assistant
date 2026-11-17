@@ -17,8 +17,8 @@ from typing import Any
 import httpx
 from pydantic import BaseModel, ConfigDict
 
-from cuk_assistant.guardrails.citation_verifier import verify_citations
-from cuk_assistant.guardrails.input_guard import FailureDiagnosticCode
+from cuk_assistant.guardrails.subsystems.citation_verifier import verify_citations
+from cuk_assistant.guardrails.subsystems.input_guard import FailureDiagnosticCode
 
 logger = logging.getLogger(__name__)
 
