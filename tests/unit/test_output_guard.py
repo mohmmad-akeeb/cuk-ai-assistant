@@ -193,12 +193,12 @@ class TestGuardrailProtocolConformance:
 
     def test_composite_guardrail_satisfies_protocol(self) -> None:
         from cuk_assistant.guardrails.subsystems.input_guard import InputGuard
-    from cuk_assistant.guardrails.subsystems.output_guard import OutputGuard
-    composite = CompositeGuardrail(input_guard=InputGuard(), output_guard=OutputGuard())
-    assert isinstance(composite, GuardrailProtocol)
+        from cuk_assistant.guardrails.subsystems.output_guard import OutputGuard
+        composite = CompositeGuardrail(input_guard=InputGuard(), output_guard=OutputGuard())
+        assert isinstance(composite, GuardrailProtocol)
 
         # Test input path
-    in_res = composite.validate_input("What is the fee for MBA at CUK?")
+        in_res = composite.validate_input("What is the fee for MBA at CUK?")
         assert in_res.is_safe is True
         assert in_res.is_in_domain is True
 
