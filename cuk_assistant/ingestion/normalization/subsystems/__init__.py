@@ -8,7 +8,7 @@ from cuk_assistant.ingestion.normalization.subsystems.metadata_normalizer import
     extract_course_code,
     normalize_academic_year,
     normalize_iso_date,
-    normalize_title,
+    normalize_title, normalize_semester,
 )
 from cuk_assistant.ingestion.normalization.subsystems.pipeline import parse_manifest
 from cuk_assistant.ingestion.normalization.subsystems.reconciler import TwoTierReconciler

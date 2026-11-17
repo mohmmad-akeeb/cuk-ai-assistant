@@ -428,3 +428,7 @@ class MetadataNormalizer:
     @staticmethod
     def normalize_title(title: str) -> str:
         return normalize_title(title)
+
+    @staticmethod
+    def normalize_semester(text: str) -> str | None:
+        return normalize_semester(text)
