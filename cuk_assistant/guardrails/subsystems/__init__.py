@@ -1,3 +1,3 @@
 from cuk_assistant.guardrails.subsystems.citation_verifier import CitationVerifier, VerbatimCitationVerifier
-from cuk_assistant.guardrails.subsystems.input_guard import InputGuard, CompositeGuardrail, FailureDiagnosticCode, GuardrailProtocol
+from cuk_assistant.guardrails.subsystems.input_guard import InputGuard, CompositeGuardrail, FailureDiagnosticCode, GuardrailProtocol, GuardrailProtocol
 from cuk_assistant.guardrails.subsystems.output_guard import OutputGuard
