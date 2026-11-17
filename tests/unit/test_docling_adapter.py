@@ -22,7 +22,7 @@ from cuk_assistant.core.protocols.document_parser import (
     ParsedDocument,
 )
 from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
-from cuk_assistant.ingestion.extract.docling_adapter import (
+from cuk_assistant.ingestion.parsers.subsystems.docling_adapter import (
     DoclingAdapter,
     DoclingPdfParser,
 )

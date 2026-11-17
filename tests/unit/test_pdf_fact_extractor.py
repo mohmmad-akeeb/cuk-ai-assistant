@@ -10,7 +10,7 @@ Unit tests for PdfFactExtractor:
 from __future__ import annotations
 
 from cuk_assistant.ingestion.chunking.hierarchical_chunker import HierarchicalChunker
-from cuk_assistant.ingestion.extract.pdf_fact_extractor import (
+from cuk_assistant.ingestion.parsers.subsystems.pdf_fact_extractor import (
     PdfFactExtractor,
     PdfIntrinsicFacts,
 )

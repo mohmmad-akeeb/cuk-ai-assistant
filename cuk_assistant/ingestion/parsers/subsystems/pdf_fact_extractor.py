@@ -1,4 +1,4 @@
-"""cuk_assistant/ingestion/extract/pdf_fact_extractor.py
+"""cuk_assistant.ingestion.parsers.subsystems/pdf_fact_extractor.py
 
 Tier 2 intrinsic document fact extractor.
 Pulls reference numbers, circular IDs, notification dates, issuing authorities, and signatories

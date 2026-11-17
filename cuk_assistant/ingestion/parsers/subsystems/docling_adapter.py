@@ -1,4 +1,4 @@
-"""cuk_assistant/ingestion/extract/docling_adapter.py
+"""cuk_assistant.ingestion.parsers.subsystems/docling_adapter.py
 
 Layout-aware PDF and document parser adapter conforming to DocumentParserProtocol.
 Provides Docling layout parsing with TableFormer and OCR fallback, utilizing OfflinePdfParser

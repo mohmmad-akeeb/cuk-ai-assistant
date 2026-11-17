@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from cuk_assistant.ingestion.chunking.hierarchical_chunker import HierarchicalChunker
-from cuk_assistant.ingestion.extract.pdf_fact_extractor import PdfFactExtractor
+from cuk_assistant.ingestion.parsers.subsystems.pdf_fact_extractor import PdfFactExtractor
 from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType
 
 logger = logging.getLogger(__name__)
