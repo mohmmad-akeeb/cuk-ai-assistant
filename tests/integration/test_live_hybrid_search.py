@@ -10,7 +10,7 @@ from __future__ import annotations
 import pytest
 
 from cuk_assistant.core.factory import create_retrieval_coordinator
-from cuk_assistant.retrieval.coordinator import HybridRetrievalCoordinator
+from cuk_assistant.retrieval.subsystems.coordinator import HybridRetrievalCoordinator
 from cuk_assistant.schemas.chunks import ChunkRecord
 from cuk_assistant.schemas.retrieval import ScoredChunk
 

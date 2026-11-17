@@ -1,4 +1,4 @@
-"""cuk_assistant/retrieval/flashrank_reranker.py
+"""cuk_assistant.retrieval.subsystems.flashrank_reranker.py
 
 Local Cross-Encoder Reranker using FlashRank with ms-marco-TinyBERT-L-2-v2.
 Provides local CPU ONNX cross-encoder reranking with sub-20ms latency.

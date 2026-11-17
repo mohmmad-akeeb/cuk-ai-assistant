@@ -9,7 +9,7 @@ import pytest
 
 from cuk_assistant.core.protocols.storage import VectorStoreProtocol
 from cuk_assistant.core.registry import get_vector_store_cls
-from cuk_assistant.retrieval.lancedb_store import LanceDBStore
+from cuk_assistant.retrieval.subsystems.lancedb_store import LanceDBStore
 from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType, ParentChunkContainer
 
 

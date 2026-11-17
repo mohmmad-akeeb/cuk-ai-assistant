@@ -11,4 +11,11 @@ The parser subsystem is responsible for transforming raw extracted files into a 
 - `cuk_assistant/core/protocols/document_parser.py`: Defines the `DocumentParserProtocol`.
 - `cuk_assistant/ingestion/parsers/base.py`: Base parser class.
 - `cuk_assistant/ingestion/parsers/pdf_parser.py`, `html_parser.py`, `api_parser.py`: Concrete parser implementations.
+
 - `cuk_assistant/ingestion/parsers/subsystems/docling_adapter.py`: Specialized adapter for Docling-based parsing.
+
+---
+
+## Related Documentation
+- [System Requirements](../requirements.md)
+- [System Architecture](../architecture.md)

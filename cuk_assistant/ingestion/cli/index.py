@@ -25,7 +25,7 @@ from rich.progress import (
 from cuk_assistant.core.config import load_settings
 from cuk_assistant.core.logging_setup import setup_logging
 from cuk_assistant.ingestion.embedding.fastembed_adapter import FastEmbedAdapter
-from cuk_assistant.retrieval.lancedb_store import LanceDBStore
+from cuk_assistant.retrieval.subsystems.lancedb_store import LanceDBStore
 from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType, ParentChunkContainer
 
 app = typer.Typer(

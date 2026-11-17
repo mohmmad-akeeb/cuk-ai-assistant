@@ -27,9 +27,9 @@ from cuk_assistant.evals.schemas import (
     GoldenTestCase,
     TestCaseEvalResult,
 )
-from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+from cuk_assistant.guardrails.subsystems.citation_verifier import VerbatimCitationVerifier
 from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
-from cuk_assistant.retrieval.coordinator import HybridRetrievalCoordinator
+from cuk_assistant.retrieval.subsystems.coordinator import HybridRetrievalCoordinator
 from cuk_assistant.schemas.llm import AnswerWithCitations
 from cuk_assistant.schemas.retrieval import ScoredChunk
 

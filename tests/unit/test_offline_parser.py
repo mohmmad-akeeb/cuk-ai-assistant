@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pymupdf as fitz
 
-from cuk_assistant.ingestion.collector.manifest import ManifestEntry, ManifestWriter
+from cuk_assistant.ingestion.collector.subsystems.manifest import ManifestEntry, ManifestWriter
 from cuk_assistant.ingestion.normalize.aggregator import aggregate_asset_references
 from cuk_assistant.ingestion.normalize.pipeline import parse_manifest
 from cuk_assistant.ingestion.normalize.sanitizer import (

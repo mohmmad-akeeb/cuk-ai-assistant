@@ -30,7 +30,7 @@ from cuk_assistant.core.factory import (
 from cuk_assistant.core.protocols.llm import LLMClientProtocol
 from cuk_assistant.core.protocols.session import SessionStoreProtocol
 from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
-from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+from cuk_assistant.guardrails.subsystems.citation_verifier import VerbatimCitationVerifier
 from cuk_assistant.guardrails.output_guard import OutputGuard
 from cuk_assistant.llm.pool import LLMProviderPool
 from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
@@ -199,7 +199,7 @@ class TestCentralFactoryAssembly:
 
     def test_create_reranker_cache_dir_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("FLASHRANK_CACHE_PATH", "/env/factory_cache")
-        with patch("cuk_assistant.retrieval.flashrank_reranker.Ranker") as mock_ranker:
+        with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.Ranker") as mock_ranker:
             reranker = create_reranker()
             assert reranker._cache_dir == "/env/factory_cache"
             assert mock_ranker.call_args.kwargs["cache_dir"] == "/env/factory_cache"

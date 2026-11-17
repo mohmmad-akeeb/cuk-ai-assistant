@@ -11,4 +11,12 @@ The CUK RAG Chatbot employs a robust evaluation framework for RAG quality assura
   - `cuk_assistant/evals/evaluator.py` provides the logic for running evaluations.
   - Evaluation data is processed and stored for analysis (e.g., in `reports/`).
 
+
 For custom evaluation routines, ensure compliance with the existing Pydantic models in `cuk_assistant/evals/schemas.py`.
+
+---
+
+## Related Documentation
+- [System Requirements](../requirements.md)
+- [System Architecture](../architecture.md)
+- [Observability](observability.md)

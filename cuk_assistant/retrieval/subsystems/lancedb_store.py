@@ -1,4 +1,4 @@
-"""cuk_assistant/retrieval/lancedb_store.py
+"""cuk_assistant.retrieval.subsystems.lancedb_store.py
 
 Embedded Hybrid Storage Subsystem using LanceDB + Tantivy BM25 + PyArrow.
 Combines 384-dimensional dense semantic search (cosine) with sparse BM25 keyword search

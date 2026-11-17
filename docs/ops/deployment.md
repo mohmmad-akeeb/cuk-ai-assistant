@@ -17,4 +17,12 @@ The application requires several environment variables for configuration. See `.
 
 ## CI/CD Pipeline
 - Automated testing is performed on every push to the main branch.
+
 - Deployment environments must enforce structured logging and tracing for observability.
+
+---
+
+## Related Documentation
+- [System Requirements](../requirements.md)
+- [System Architecture](../architecture.md)
+- [Observability](observability.md)

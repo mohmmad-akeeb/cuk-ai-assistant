@@ -10,4 +10,11 @@ The guardrails system ensures input query safety, output quality, and factual gr
 ## Key Components
 - `cuk_assistant/guardrails/input_guard.py`: Implements input validation.
 - `cuk_assistant/guardrails/output_guard.py`: Implements output scrubbing and verification.
+
 - `cuk_assistant/guardrails/citation_verifier.py`: Verifies factual assertions.
+
+---
+
+## Related Documentation
+- [System Requirements](requirements.md)
+- [System Architecture](architecture.md)

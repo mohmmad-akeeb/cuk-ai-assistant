@@ -9,7 +9,7 @@ import pytest
 
 from cuk_assistant.core.protocols.reranker import RerankerProtocol
 from cuk_assistant.core.registry import get_reranker_cls
-from cuk_assistant.retrieval.flashrank_reranker import FlashRankReranker
+from cuk_assistant.retrieval.subsystems.flashrank_reranker import FlashRankReranker
 from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType
 from cuk_assistant.schemas.retrieval import ScoredChunk
 
@@ -85,14 +85,14 @@ class TestFlashRankReranker:
 
     def test_flashrank_cache_dir_precedence_explicit(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("FLASHRANK_CACHE_PATH", "/env/cache")
-        with patch("cuk_assistant.retrieval.flashrank_reranker.Ranker") as mock_ranker:
+        with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.Ranker") as mock_ranker:
             reranker = FlashRankReranker(cache_dir="/explicit/cache")
             assert reranker._cache_dir == "/explicit/cache"
             assert mock_ranker.call_args.kwargs["cache_dir"] == "/explicit/cache"
 
     def test_flashrank_cache_dir_env_var(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("FLASHRANK_CACHE_PATH", "/env/model_cache/flashrank")
-        with patch("cuk_assistant.retrieval.flashrank_reranker.Ranker") as mock_ranker:
+        with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.Ranker") as mock_ranker:
             reranker = FlashRankReranker()
             assert reranker._cache_dir == "/env/model_cache/flashrank"
             assert mock_ranker.call_args.kwargs["cache_dir"] == "/env/model_cache/flashrank"
@@ -100,10 +100,10 @@ class TestFlashRankReranker:
     def test_flashrank_cache_dir_fallback_opt_cache(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("FLASHRANK_CACHE_PATH", raising=False)
         monkeypatch.delenv("FLASHRANK_CACHE_DIR", raising=False)
-        with patch("cuk_assistant.retrieval.flashrank_reranker.DEFAULT_OPT_CACHE") as mock_opt:
+        with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.DEFAULT_OPT_CACHE") as mock_opt:
             mock_opt.is_dir.return_value = True
             mock_opt.__str__.return_value = "/opt/model_cache/flashrank"
-            with patch("cuk_assistant.retrieval.flashrank_reranker.Ranker") as mock_ranker:
+            with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.Ranker") as mock_ranker:
                 reranker = FlashRankReranker()
                 assert reranker._cache_dir == "/opt/model_cache/flashrank"
                 assert mock_ranker.call_args.kwargs["cache_dir"] == "/opt/model_cache/flashrank"
@@ -111,9 +111,9 @@ class TestFlashRankReranker:
     def test_flashrank_cache_dir_fallback_tmp(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("FLASHRANK_CACHE_PATH", raising=False)
         monkeypatch.delenv("FLASHRANK_CACHE_DIR", raising=False)
-        with patch("cuk_assistant.retrieval.flashrank_reranker.DEFAULT_OPT_CACHE") as mock_opt:
+        with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.DEFAULT_OPT_CACHE") as mock_opt:
             mock_opt.is_dir.return_value = False
-            with patch("cuk_assistant.retrieval.flashrank_reranker.Ranker") as mock_ranker:
+            with patch("cuk_assistant.retrieval.subsystems.flashrank_reranker.Ranker") as mock_ranker:
                 reranker = FlashRankReranker()
                 assert reranker._cache_dir == "/tmp"
                 assert mock_ranker.call_args.kwargs["cache_dir"] == "/tmp"

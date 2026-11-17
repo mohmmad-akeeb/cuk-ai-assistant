@@ -1,6 +1,6 @@
-"""Shim re-exporting from cuk_assistant.ingestion.collector.client for backward compatibility."""
+"""Shim re-exporting from cuk_assistant.ingestion.collector.subsystems.client for backward compatibility."""
 
-from cuk_assistant.ingestion.collector.client import (
+from cuk_assistant.ingestion.collector.subsystems.client import (
     _API_HEADERS,
     API_BASE,
     DirectApiClient,

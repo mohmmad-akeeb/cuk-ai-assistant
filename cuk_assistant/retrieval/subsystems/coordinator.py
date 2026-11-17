@@ -1,4 +1,4 @@
-"""cuk_assistant/retrieval/coordinator.py
+"""cuk_assistant.retrieval.subsystems.coordinator.py
 
 Hybrid Retrieval Coordinator with Scope Fallback and Deterministic Regex Recovery.
 Implements FR-4.1, FR-4.2, FR-4.3, FR-4.4, and FR-4.5.

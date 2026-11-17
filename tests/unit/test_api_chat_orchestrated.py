@@ -22,7 +22,7 @@ from cuk_assistant.core.factory import (
     create_output_guard,
     create_router,
 )
-from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+from cuk_assistant.guardrails.subsystems.citation_verifier import VerbatimCitationVerifier
 from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
 from cuk_assistant.pipeline.orchestrator import RAGOrchestrator
 from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType

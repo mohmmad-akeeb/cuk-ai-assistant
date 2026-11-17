@@ -11,4 +11,11 @@ The retrieval strategy employs hybrid search (Dense + Sparse) to ensure high-qua
 ## Key Components
 - `cuk_assistant/core/protocols/storage.py`: Defines `EmbeddingModelProtocol` and `VectorStoreProtocol`.
 - `cuk_assistant/core/protocols/reranker.py`: Defines `RerankerProtocol`.
+
 - `cuk_assistant/retrieval/`: Contains concrete implementation adapters.
+
+---
+
+## Related Documentation
+- [System Requirements](requirements.md)
+- [System Architecture](architecture.md)

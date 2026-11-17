@@ -1,6 +1,6 @@
 """Unit tests for VerbatimCitationVerifier (Task 4.5)."""
 
-from cuk_assistant.guardrails.citation_verifier import (
+from cuk_assistant.guardrails.subsystems.citation_verifier import (
     VerbatimCitationVerifier,
     verify_citations,
 )
