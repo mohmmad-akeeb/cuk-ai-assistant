@@ -433,3 +433,7 @@ class CompositeGuardrail:
 
     def validate(self, query: str) -> bool:
         return all(guard.validate(query) for guard in self.guards)
+
+from typing import Protocol
+class GuardrailProtocol(Protocol):
+    def validate(self, query: str) -> bool: ...

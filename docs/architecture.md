@@ -35,5 +35,13 @@ Handles vector storage, hybrid search (BM25 + Vector), and reranking.
 ### 6. LLM Layer (`cuk_assistant/llm`)
 Structured interaction with LLM providers with enforced Pydantic schemas for structured outputs (`AnswerWithCitations`).
 
+
 ### 7. Observability (`cuk_assistant/observability`)
 Structured OpenTelemetry spans via Logfire, with mandatory failure tagging (e.g., `GUARDRAIL_BLOCKED`, `RETRIEVAL_EMPTY`).
+
+---
+
+## Related Documentation
+- [System Requirements](requirements.md)
+- [API Contracts](api_contracts.md)
+- [Data Schema](data_schema.md)
