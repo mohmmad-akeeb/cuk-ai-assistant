@@ -208,3 +208,24 @@ class CompositeGuardrail:
     def validate_and_scrub_output(self, response: str, quoted_snippets: list[str], context_chunks: list[Any]) -> OutputGuardResult:
         """Pass-through to output guard."""
         return self.output_guard.validate_and_scrub(response, quoted_snippets, context_chunks)
+
+@runtime_checkable
+class GuardrailProtocol(Protocol):
+    def validate(self, query: str) -> bool: ...
+
+class CompositeGuardrail:
+    """Combines multiple input guardrail checks."""
+    def __init__(self, input_guard: Any, output_guard: Any) -> None:
+        self.input_guard = input_guard
+        self.output_guard = output_guard
+
+    def validate(self, query: str) -> bool:
+        return self.input_guard.validate(query).is_safe
+
+    def validate_input(self, query: str) -> InputGuardResult:
+        """Alias for validate."""
+        return self.input_guard.validate(query)
+
+    def validate_and_scrub_output(self, generated_text: str, quoted_snippets: list[str], context_chunks: list[Any]) -> OutputGuardResult:
+        """Pass-through to output guard."""
+        return self.output_guard.validate_and_scrub(generated_text, quoted_snippets, context_chunks)
