@@ -8,11 +8,11 @@ from __future__ import annotations
 
 from typing import Any, Protocol, runtime_checkable
 
-from cuk_assistant.guardrails.citation_verifier import (
+from cuk_assistant.guardrails.subsystems.citation_verifier import (
     VerbatimCitationVerifier,
     verify_citations,
 )
-from cuk_assistant.guardrails.input_guard import (
+from cuk_assistant.guardrails.subsystems.input_guard import (
     DEFAULT_DOMAIN_DEFLECTION,
     DEFAULT_UNSAFE_DEFLECTION,
     FailureDiagnosticCode,
@@ -21,7 +21,7 @@ from cuk_assistant.guardrails.input_guard import (
     InputGuardResult,
     LocalDomainClassifier,
 )
-from cuk_assistant.guardrails.output_guard import (
+from cuk_assistant.guardrails.subsystems.output_guard import (
     DEFAULT_UNSAFE_OUTPUT_REDACTION,
     GroqLlamaGuardOutputRail,
     OutputGuard,

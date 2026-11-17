@@ -30,7 +30,7 @@ from cuk_assistant.core.registry import (
     get_telemetry_sink_cls,
     get_vector_store_cls,
 )
-from cuk_assistant.guardrails import (
+from cuk_assistant.guardrails.subsystems import (
     CitationVerifier,
     CompositeGuardrail,
     GuardrailProtocol,
@@ -40,7 +40,7 @@ from cuk_assistant.guardrails import (
 )
 from cuk_assistant.llm import GeminiClient, GroqClient, LLMProviderPool
 from cuk_assistant.pipeline.orchestrator import RAGOrchestrator
-from cuk_assistant.retrieval.coordinator import HybridRetrievalCoordinator
+from cuk_assistant.retrieval.subsystems.coordinator import HybridRetrievalCoordinator
 
 if TYPE_CHECKING:
     pass
@@ -71,7 +71,7 @@ def create_vector_store(
     **kwargs: Any,
 ) -> VectorStoreProtocol:
     """Instantiate a registered vector store adapter."""
-    import cuk_assistant.retrieval.lancedb_store  # noqa: F401
+    import cuk_assistant.retrieval.subsystems.lancedb_store  # noqa: F401
 
     cls = get_vector_store_cls(name)
     init_kwargs = dict(kwargs)
@@ -89,7 +89,7 @@ def create_reranker(
     **kwargs: Any,
 ) -> RerankerProtocol:
     """Instantiate a registered reranker adapter."""
-    import cuk_assistant.retrieval.flashrank_reranker  # noqa: F401
+    import cuk_assistant.retrieval.subsystems.flashrank_reranker  # noqa: F401
 
     cls = get_reranker_cls(name)
     init_kwargs = dict(kwargs)
