@@ -12,7 +12,7 @@ Covers 30+ parameter-driven test cases across:
 
 import pytest
 
-from cuk_assistant.ingestion.normalize import (
+from cuk_assistant.ingestion.normalization.subsystems import (
     clean_guid,
     extract_batch_year,
     extract_circular_reference,

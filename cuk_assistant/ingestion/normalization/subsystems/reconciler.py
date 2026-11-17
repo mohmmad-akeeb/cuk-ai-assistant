@@ -19,7 +19,7 @@ from cuk_assistant.core.protocols.telemetry import (
     FailureDiagnosticCode,
     TelemetrySinkProtocol,
 )
-from cuk_assistant.ingestion.normalize.metadata_normalizer import (
+from cuk_assistant.ingestion.normalization.subsystems.metadata_normalizer import (
     clean_guid,
     extract_batch_year,
     extract_circular_reference,

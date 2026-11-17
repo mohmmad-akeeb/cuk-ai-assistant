@@ -403,3 +403,28 @@ def clean_guid(guid: Any) -> str:
         return ""
     s = str(guid).strip().upper()
     return s.strip("{}")
+
+class MetadataNormalizer:
+    @staticmethod
+    def extract_circular_reference(text: str) -> str | None:
+        return extract_circular_reference(text)
+
+    @staticmethod
+    def normalize_academic_year(text: str) -> str | None:
+        return normalize_academic_year(text)
+
+    @staticmethod
+    def extract_course_code(text: str) -> str | None:
+        return extract_course_code(text)
+
+    @staticmethod
+    def normalize_iso_date(text: str) -> str | None:
+        return normalize_iso_date(text)
+
+    @staticmethod
+    def extract_batch_year(text: str) -> str | None:
+        return extract_batch_year(text)
+
+    @staticmethod
+    def normalize_title(title: str) -> str:
+        return normalize_title(title)

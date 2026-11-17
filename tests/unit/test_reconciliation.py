@@ -10,7 +10,7 @@ from cuk_assistant.core.protocols.telemetry import (
     FailureDiagnosticCode,
     TelemetrySinkProtocol,
 )
-from cuk_assistant.ingestion.normalize.reconciler import TwoTierReconciler
+from cuk_assistant.ingestion.normalization.subsystems.reconciler import TwoTierReconciler
 from cuk_assistant.schemas.metadata import (
     AdmissionDocMetadata,
     FacultyDocMetadata,

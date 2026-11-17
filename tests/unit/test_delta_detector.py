@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from cuk_assistant.core.protocols.ingestion import DeltaDetectorProtocol
-from cuk_assistant.ingestion.normalize.delta_detector import (
+from cuk_assistant.ingestion.normalization.subsystems.delta_detector import (
     DeltaDetector,
     DeltaStatus,
 )

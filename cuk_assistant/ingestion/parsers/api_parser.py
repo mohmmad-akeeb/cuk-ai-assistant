@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from cuk_assistant.ingestion.normalize.sanitizer import scrub_pii
+from cuk_assistant.ingestion.normalization.subsystems.sanitizer import scrub_pii
 from cuk_assistant.ingestion.parsers.base import BaseParser, ParsedApiRecord
 from cuk_assistant.ingestion.parsers.html_parser import parse_html
 

@@ -19,9 +19,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from cuk_assistant.ingestion.normalize.aggregator import aggregate_asset_references
-from cuk_assistant.ingestion.normalize.sanitizer import scrub_pii
-from cuk_assistant.ingestion.parsers.api_parser import OfflineApiParser
+from cuk_assistant.ingestion.normalization.subsystems.aggregator import aggregate_asset_references
+from cuk_assistant.ingestion.normalization.subsystems.sanitizer import scrub_pii
 from cuk_assistant.ingestion.parsers.html_parser import OfflineHtmlParser
 from cuk_assistant.ingestion.parsers.pdf_parser import OfflinePdfParser
 from cuk_assistant.schemas.document import Document
