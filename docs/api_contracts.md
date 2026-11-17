@@ -22,5 +22,12 @@ The CUK RAG Assistant API is built with FastAPI. It enforces strict schemas for 
 `GET /sessions/{session_id}`
 - **Response**: `{ session_data: dict }`
 
+
 ## Error Handling
 All endpoints return structured error responses with failure diagnostic codes for observability.
+
+---
+
+## Related Documentation
+- [System Requirements](requirements.md)
+- [System Architecture](architecture.md)

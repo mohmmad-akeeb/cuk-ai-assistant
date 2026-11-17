@@ -425,3 +425,11 @@ class InputGuard:
             deflection_message=None,
             diagnostic_code=None,
         )
+
+class CompositeGuardrail:
+    """Combines multiple input guardrail checks."""
+    def __init__(self, guards: list[Any]) -> None:
+        self.guards = guards
+
+    def validate(self, query: str) -> bool:
+        return all(guard.validate(query) for guard in self.guards)
