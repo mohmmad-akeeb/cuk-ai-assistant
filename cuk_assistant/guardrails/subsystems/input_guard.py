@@ -169,3 +169,15 @@ class CompositeGuardrail:
 
     def validate(self, query: str) -> bool:
         return self.input_guard.validate(query).is_safe
+
+class CompositeGuardrail:
+    """Combines multiple input guardrail checks."""
+    def __init__(self, input_guard: Any, output_guard: Any) -> None:
+        self.input_guard = input_guard
+        self.output_guard = output_guard
+
+    def validate(self, query: str) -> bool:
+        return self.input_guard.validate(query).is_safe
+
+    def validate_input(self, query: str) -> bool:
+        return self.validate(query)
