@@ -70,7 +70,7 @@ from pathlib import Path
 
 from cuk_assistant.core.config import Settings
 from cuk_assistant.core.http_cache import CachedClient
-from cuk_assistant.ingestion.collector.client import DirectApiClient
+from cuk_assistant.ingestion.collector.subsystems.client import DirectApiClient
 from cuk_assistant.ingestion.crawl.html_parser import parse_html
 
 logger = logging.getLogger(__name__)

@@ -3,13 +3,13 @@
 Pure raw network collector (Extract & Load) writing to data/raw/.
 """
 
-from cuk_assistant.ingestion.collector.client import (
+from cuk_assistant.ingestion.collector.subsystems.client import (
     API_BASE,
     DirectApiClient,
     download_pdf_cached,
 )
-from cuk_assistant.ingestion.collector.manifest import ManifestEntry, ManifestWriter
-from cuk_assistant.ingestion.collector.route_walker import (
+from cuk_assistant.ingestion.collector.subsystems.manifest import ManifestEntry, ManifestWriter
+from cuk_assistant.ingestion.collector.subsystems.route_walker import (
     SiteNode,
     build_node_table,
     fetch_all_nodes,

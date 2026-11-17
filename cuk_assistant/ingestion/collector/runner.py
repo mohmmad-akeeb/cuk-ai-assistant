@@ -24,13 +24,13 @@ from rich.console import Console
 
 from cuk_assistant.core.config import Settings
 from cuk_assistant.core.http_cache import CachedClient
-from cuk_assistant.ingestion.collector.client import (
+from cuk_assistant.ingestion.collector.subsystems.client import (
     API_BASE,
     DirectApiClient,
     download_pdf_cached,
 )
-from cuk_assistant.ingestion.collector.manifest import ManifestEntry, ManifestWriter
-from cuk_assistant.ingestion.collector.route_walker import (
+from cuk_assistant.ingestion.collector.subsystems.manifest import ManifestEntry, ManifestWriter
+from cuk_assistant.ingestion.collector.subsystems.route_walker import (
     build_node_table,
     fetch_all_nodes,
     nodes_to_jsonl,
