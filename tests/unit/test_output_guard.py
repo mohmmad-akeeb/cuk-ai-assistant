@@ -195,7 +195,7 @@ class TestGuardrailProtocolConformance:
         from cuk_assistant.guardrails.subsystems.input_guard import InputGuard
     from cuk_assistant.guardrails.subsystems.output_guard import OutputGuard
     composite = CompositeGuardrail(input_guard=InputGuard(), output_guard=OutputGuard())
-        assert isinstance(composite, GuardrailProtocol)
+    assert isinstance(composite, GuardrailProtocol)
 
         # Test input path
         in_res = composite.validate_input("What is the fee for MBA at CUK?")
