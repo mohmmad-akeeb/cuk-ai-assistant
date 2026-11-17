@@ -108,3 +108,12 @@ __all__ = [
     "scrub_pii",
     "scrub_roll_numbers",
 ]
+
+class Sanitizer:
+    @staticmethod
+    def scrub_pii(text: str) -> str:
+        return scrub_pii(text)
+
+    @staticmethod
+    def sanitize_record_dict(record: dict[str, Any]) -> dict[str, Any]:
+        return sanitize_record_dict(record)
