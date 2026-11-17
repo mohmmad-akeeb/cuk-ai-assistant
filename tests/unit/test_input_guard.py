@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from cuk_assistant.guardrails.input_guard import (
+from cuk_assistant.guardrails.subsystems.input_guard import (
     DEFAULT_DOMAIN_DEFLECTION,
     DEFAULT_UNSAFE_DEFLECTION,
     FailureDiagnosticCode,

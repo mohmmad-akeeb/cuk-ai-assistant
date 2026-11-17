@@ -31,7 +31,7 @@ from cuk_assistant.core.protocols.llm import LLMClientProtocol
 from cuk_assistant.core.protocols.session import SessionStoreProtocol
 from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
 from cuk_assistant.guardrails.subsystems.citation_verifier import VerbatimCitationVerifier
-from cuk_assistant.guardrails.output_guard import OutputGuard
+from cuk_assistant.guardrails.subsystems.output_guard import OutputGuard
 from cuk_assistant.llm.pool import LLMProviderPool
 from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
 from cuk_assistant.pipeline.orchestrator import RAGOrchestrator, TurnResult

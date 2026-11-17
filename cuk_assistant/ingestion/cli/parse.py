@@ -16,7 +16,7 @@ from rich.console import Console
 
 from cuk_assistant.core.config import load_settings
 from cuk_assistant.core.logging_setup import setup_logging
-from cuk_assistant.ingestion.normalize.pipeline import parse_manifest
+from cuk_assistant.ingestion.normalization.subsystems.pipeline import parse_manifest
 
 app = typer.Typer(
     name="cuk-parse",

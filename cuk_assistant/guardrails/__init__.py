@@ -6,5 +6,5 @@ __all__ = [
     "CitationVerifier",
     "VerbatimCitationVerifier",
     "InputGuard",
-    "OutputGuard",
+    "OutputGuard", "CompositeGuardrail"
 ]
