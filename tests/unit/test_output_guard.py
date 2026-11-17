@@ -13,7 +13,7 @@ from cuk_assistant.guardrails import (
     OutputGuardResult,
     StudentPIIScrubber,
 )
-from cuk_assistant.guardrails.output_guard import (
+from cuk_assistant.guardrails.subsystems.output_guard import (
     DEFAULT_UNSAFE_OUTPUT_REDACTION,
     GroqLlamaGuardOutputRail,
 )
