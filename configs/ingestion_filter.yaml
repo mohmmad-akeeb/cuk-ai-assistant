@@ -1,0 +1,66 @@
+# configs/ingestion_filter.yaml
+# Central University of Kashmir (CUK) RAG Assistant
+# Declarative Ingestion Pruning & Corpus Hygiene Configuration
+
+ingestion_filter:
+  version: "1.0.0"
+  reference_date: "2026-11-15"
+
+  # Temporal pruning thresholds (in months relative to reference_date / current time)
+  temporal_pruning:
+    tenders_max_age_months: 12
+    admission_notices_max_age_months: 24
+    general_notices_max_age_months: 36
+    press_releases_max_age_months: 36
+    exam_results_max_age_months: 24
+    historical_corpus_threshold_months: 60
+
+  # Security & PII exclusions
+  security_exclusions:
+    exclude_sensitive_flag: true
+    title_blacklists:
+      - "confidential"
+      - "salary"
+      - "dispute"
+      - "selection list"
+      - "merit list"
+      - "provisional list"
+      - "provisional selection"
+      - "waiting list"
+      - "waitlist"
+      - "roll number list"
+      - "enrollment list"
+      - "disciplinary"
+      - "vigilance enquiry"
+      - "inquiry committee"
+      - "show cause"
+
+  # Exact duplicate drop
+  deduplication:
+    drop_exact_content_hash_duplicates: true
+    drop_exact_text_duplicates: true
+
+  # Academic syllabus & curriculum retention policy
+  curriculum_lifecycle:
+    superseded_handling: "drop" # options: "drop", "tag_historical"
+    superseded_programs:
+      "Department of Physics":
+        active_min_year: 2026
+        superseded_years: [2022]
+      "Department of Commerce":
+        active_min_year: 2024
+        superseded_years: [2022]
+    pre_nep_policy:
+      pre_2021_action: "tag_historical" # preserve older accredited syllabi with metadata tag
+      historical_flag_field: "is_historical"
+
+  # Network & Crawler throughput tuning recommendations
+  crawler_optimization:
+    recommended_max_connections: 4
+    rate_limits:
+      api_endpoints_rps: 1.0
+      static_cdn_pdf_rps: 4.0
+    slow_endpoints_timeout_seconds: 45
+    blacklist_broken_endpoints:
+      - "pressrelease/selectbyid"
+      - "http://disgenonline.in/cukapi"

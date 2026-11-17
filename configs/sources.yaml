@@ -1,0 +1,16 @@
+# Seed configuration for the CUK website crawler
+base_url: "https://www.cukashmir.ac.in"
+api_base: "https://cukapi.disgenweb.in"
+
+# Rate limiting
+rate_limit_rps: 1.0
+max_connections: 2
+
+# Angular routes to crawl (beyond those discovered from the nav tree)
+extra_routes: []
+
+# Domains never to crawl (record URL only)
+deny_external:
+  - cukashmir.samarth.ac.in
+  - results.cukashmir.in
+  - cukashmir.ddfs.in

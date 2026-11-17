@@ -1,0 +1,694 @@
+[2026-11-16 20:04:48] ==========================================================
+[2026-11-16 20:04:48] Starting Autonomous Post-Task Watcher Daemon...
+[2026-11-16 20:04:48] Project Root: /mnt/ubuntu_data/projects/cuk-rag-chatbot
+[2026-11-16 20:04:48] Watching for completion of all 5 parallel tasks...
+[2026-11-16 20:04:48] ==========================================================
+[2026-11-16 20:04:48] Waiting for tasks... Progress: 1/5 ready (T1:1, T2:0, T3:0, T4:0, T5:0). Elapsed: 0 min.
+[2026-11-16 20:07:18] Waiting for tasks... Progress: 4/5 ready (T1:1, T2:1, T3:1, T4:0, T5:1). Elapsed: 2 min.
+[2026-11-16 20:07:48] >>> ALL 5 TASKS HAVE COMPLETED DELIVERABLES! Starting automated pipeline execution...
+[2026-11-16 20:07:48] --- STEP 1: Running Ruff Linter & Formatter Check ---
+F401 [*] `hashlib` imported but unused
+  --> cuk_assistant/api/routes/chat.py:9:8
+   |
+ 7 | from __future__ import annotations
+ 8 |
+ 9 | import hashlib
+   |        ^^^^^^^
+10 | import json
+11 | import logging
+   |
+help: Remove unused import: `hashlib`
+  |
+8 |
+  - import hashlib
+9 | import json
+  |
+
+F401 [*] `cuk_assistant.evals.query_miner.MenuHierarchyMiner` imported but unused
+  --> cuk_assistant/evals/cli.py:30:45
+   |
+28 | from cuk_assistant.core.factory import create_retrieval_coordinator
+29 | from cuk_assistant.evals.evaluator import RAGEvaluator
+30 | from cuk_assistant.evals.query_miner import MenuHierarchyMiner
+   |                                             ^^^^^^^^^^^^^^^^^^
+31 | from cuk_assistant.evals.schemas import TestCaseEvalResult
+   |
+help: Remove unused import: `cuk_assistant.evals.query_miner.MenuHierarchyMiner`
+   |
+29 | from cuk_assistant.evals.evaluator import RAGEvaluator
+   - from cuk_assistant.evals.query_miner import MenuHierarchyMiner
+30 | from cuk_assistant.evals.schemas import TestCaseEvalResult
+   |
+
+B007 Loop control variable `count` not used within loop body
+   --> cuk_assistant/evals/query_miner.py:459:28
+    |
+457 |         # Dynamically inject high-frequency departments into Academics
+458 |         if category_id == "academics" and self._departments:
+459 |             for dept_name, count in self._departments.most_common(3):
+    |                            ^^^^^
+460 |                 _add_item(
+461 |                     f"What is the detailed syllabus for {dept_name}?",
+    |
+help: Rename unused `count` to `_count`
+    |
+458 |         if category_id == "academics" and self._departments:
+    -             for dept_name, count in self._departments.most_common(3):
+459 +             for dept_name, _count in self._departments.most_common(3):
+460 |                 _add_item(
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+F821 Undefined name `Any`
+  --> cuk_assistant/guardrails/citation_verifier.py:70:38
+   |
+68 |     def verify(
+69 |         self,
+70 |         quoted_snippets: list[str] | Any,
+   |                                      ^^^
+71 |         retrieved_contexts: list[str] | list[Any],
+72 |         min_snippet_chars: int | None = None,
+   |
+
+F821 Undefined name `Any`
+  --> cuk_assistant/guardrails/citation_verifier.py:71:46
+   |
+69 |         self,
+70 |         quoted_snippets: list[str] | Any,
+71 |         retrieved_contexts: list[str] | list[Any],
+   |                                              ^^^
+72 |         min_snippet_chars: int | None = None,
+73 |     ) -> tuple[bool, list[str]]:
+   |
+
+F401 [*] `json` imported but unused
+  --> cuk_assistant/pipeline/orchestrator.py:20:8
+   |
+18 | import hashlib
+19 | import inspect
+20 | import json
+   |        ^^^^
+21 | import logging
+22 | import time
+   |
+help: Remove unused import: `json`
+   |
+19 | import inspect
+   - import json
+20 | import logging
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/unit/test_factory_and_orchestrator.py:10:1
+   |
+ 8 |   """
+ 9 |
+10 | / from __future__ import annotations
+11 | |
+12 | | import asyncio
+13 | | from typing import Any
+14 | |
+15 | | import pytest
+16 | |
+17 | | from cuk_assistant.agent.router import (
+18 | |     AdaptiveRouter,
+19 | |     RouteDestination,
+20 | |     RoutingDecision,
+21 | | )
+22 | | from cuk_assistant.agent.session_store import SQLiteSessionStore
+23 | | from cuk_assistant.agent.slot_filler import QuickReplyOption, QuickReplyPayload
+24 | | from cuk_assistant.core.factory import (
+25 | |     create_citation_verifier,
+26 | |     create_guardrails,
+27 | |     create_input_guard,
+28 | |     create_llm_pool,
+29 | |     create_output_guard,
+30 | |     create_rag_orchestrator,
+31 | |     create_retrieval_coordinator,
+32 | |     create_router,
+33 | |     create_session_store,
+34 | | )
+35 | | from cuk_assistant.core.protocols.llm import LLMClientProtocol
+36 | | from cuk_assistant.core.protocols.session import MessageRecord, SessionStoreProtocol
+37 | | from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
+38 | | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+39 | | from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+40 | | from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+41 | | from cuk_assistant.llm.pool import LLMProviderPool
+42 | | from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
+43 | | from cuk_assistant.pipeline.orchestrator import CitationCard, RAGOrchestrator, TurnResult
+44 | | from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType
+45 | | from cuk_assistant.schemas.llm import AnswerWithCitations
+46 | | from cuk_assistant.schemas.retrieval import ScoredChunk
+   | |_______________________________________________________^
+help: Organize imports
+   |
+47 |
+   -
+48 | # ---------------------------------------------------------------------------
+   |
+
+F401 [*] `asyncio` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:12:8
+   |
+10 | from __future__ import annotations
+11 |
+12 | import asyncio
+   |        ^^^^^^^
+13 | from typing import Any
+   |
+help: Remove unused import: `asyncio`
+   |
+11 |
+   - import asyncio
+12 | from typing import Any
+   |
+
+F401 [*] `cuk_assistant.agent.router.RouteDestination` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:19:5
+   |
+17 | from cuk_assistant.agent.router import (
+18 |     AdaptiveRouter,
+19 |     RouteDestination,
+   |     ^^^^^^^^^^^^^^^^
+20 |     RoutingDecision,
+21 | )
+   |
+help: Remove unused import
+   |
+18 |     AdaptiveRouter,
+   -     RouteDestination,
+   -     RoutingDecision,
+19 | )
+   |
+
+F401 [*] `cuk_assistant.agent.router.RoutingDecision` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:20:5
+   |
+18 |     AdaptiveRouter,
+19 |     RouteDestination,
+20 |     RoutingDecision,
+   |     ^^^^^^^^^^^^^^^
+21 | )
+22 | from cuk_assistant.agent.session_store import SQLiteSessionStore
+   |
+help: Remove unused import
+   |
+18 |     AdaptiveRouter,
+   -     RouteDestination,
+   -     RoutingDecision,
+19 | )
+   |
+
+F401 [*] `cuk_assistant.agent.slot_filler.QuickReplyOption` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:23:45
+   |
+21 | )
+22 | from cuk_assistant.agent.session_store import SQLiteSessionStore
+23 | from cuk_assistant.agent.slot_filler import QuickReplyOption, QuickReplyPayload
+   |                                             ^^^^^^^^^^^^^^^^
+24 | from cuk_assistant.core.factory import (
+25 |     create_citation_verifier,
+   |
+help: Remove unused import
+   |
+22 | from cuk_assistant.agent.session_store import SQLiteSessionStore
+   - from cuk_assistant.agent.slot_filler import QuickReplyOption, QuickReplyPayload
+23 | from cuk_assistant.core.factory import (
+   |
+
+F401 [*] `cuk_assistant.agent.slot_filler.QuickReplyPayload` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:23:63
+   |
+21 | )
+22 | from cuk_assistant.agent.session_store import SQLiteSessionStore
+23 | from cuk_assistant.agent.slot_filler import QuickReplyOption, QuickReplyPayload
+   |                                                               ^^^^^^^^^^^^^^^^^
+24 | from cuk_assistant.core.factory import (
+25 |     create_citation_verifier,
+   |
+help: Remove unused import
+   |
+22 | from cuk_assistant.agent.session_store import SQLiteSessionStore
+   - from cuk_assistant.agent.slot_filler import QuickReplyOption, QuickReplyPayload
+23 | from cuk_assistant.core.factory import (
+   |
+
+F401 [*] `cuk_assistant.core.factory.create_citation_verifier` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:25:5
+   |
+23 | from cuk_assistant.agent.slot_filler import QuickReplyOption, QuickReplyPayload
+24 | from cuk_assistant.core.factory import (
+25 |     create_citation_verifier,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+26 |     create_guardrails,
+27 |     create_input_guard,
+   |
+help: Remove unused import
+   |
+24 | from cuk_assistant.core.factory import (
+   -     create_citation_verifier,
+25 |     create_guardrails,
+26 |     create_input_guard,
+27 |     create_llm_pool,
+   -     create_output_guard,
+28 |     create_rag_orchestrator,
+   -     create_retrieval_coordinator,
+29 |     create_router,
+   |
+
+F401 [*] `cuk_assistant.core.factory.create_output_guard` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:29:5
+   |
+27 |     create_input_guard,
+28 |     create_llm_pool,
+29 |     create_output_guard,
+   |     ^^^^^^^^^^^^^^^^^^^
+30 |     create_rag_orchestrator,
+31 |     create_retrieval_coordinator,
+   |
+help: Remove unused import
+   |
+24 | from cuk_assistant.core.factory import (
+   -     create_citation_verifier,
+25 |     create_guardrails,
+26 |     create_input_guard,
+27 |     create_llm_pool,
+   -     create_output_guard,
+28 |     create_rag_orchestrator,
+   -     create_retrieval_coordinator,
+29 |     create_router,
+   |
+
+F401 [*] `cuk_assistant.core.factory.create_retrieval_coordinator` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:31:5
+   |
+29 |     create_output_guard,
+30 |     create_rag_orchestrator,
+31 |     create_retrieval_coordinator,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 |     create_router,
+33 |     create_session_store,
+   |
+help: Remove unused import
+   |
+24 | from cuk_assistant.core.factory import (
+   -     create_citation_verifier,
+25 |     create_guardrails,
+26 |     create_input_guard,
+27 |     create_llm_pool,
+   -     create_output_guard,
+28 |     create_rag_orchestrator,
+   -     create_retrieval_coordinator,
+29 |     create_router,
+   |
+
+F401 [*] `cuk_assistant.core.protocols.session.MessageRecord` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:36:50
+   |
+34 | )
+35 | from cuk_assistant.core.protocols.llm import LLMClientProtocol
+36 | from cuk_assistant.core.protocols.session import MessageRecord, SessionStoreProtocol
+   |                                                  ^^^^^^^^^^^^^
+37 | from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
+38 | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+   |
+help: Remove unused import: `cuk_assistant.core.protocols.session.MessageRecord`
+   |
+35 | from cuk_assistant.core.protocols.llm import LLMClientProtocol
+   - from cuk_assistant.core.protocols.session import MessageRecord, SessionStoreProtocol
+36 + from cuk_assistant.core.protocols.session import SessionStoreProtocol
+37 | from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
+   |
+
+F401 [*] `cuk_assistant.guardrails.input_guard.InputGuard` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:39:50
+   |
+37 | from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
+38 | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+39 | from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+   |                                                  ^^^^^^^^^^
+40 | from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+41 | from cuk_assistant.llm.pool import LLMProviderPool
+   |
+help: Remove unused import
+   |
+38 | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+   - from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+39 | from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+   |
+
+F401 [*] `cuk_assistant.guardrails.input_guard.InputGuardResult` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:39:62
+   |
+37 | from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
+38 | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+39 | from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+   |                                                              ^^^^^^^^^^^^^^^^
+40 | from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+41 | from cuk_assistant.llm.pool import LLMProviderPool
+   |
+help: Remove unused import
+   |
+38 | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+   - from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+39 | from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+   |
+
+F401 [*] `cuk_assistant.guardrails.output_guard.OutputGuardResult` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:40:64
+   |
+38 | from cuk_assistant.guardrails.citation_verifier import VerbatimCitationVerifier
+39 | from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+40 | from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+   |                                                                ^^^^^^^^^^^^^^^^^
+41 | from cuk_assistant.llm.pool import LLMProviderPool
+42 | from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
+   |
+help: Remove unused import: `cuk_assistant.guardrails.output_guard.OutputGuardResult`
+   |
+39 | from cuk_assistant.guardrails.input_guard import InputGuard, InputGuardResult
+   - from cuk_assistant.guardrails.output_guard import OutputGuard, OutputGuardResult
+40 + from cuk_assistant.guardrails.output_guard import OutputGuard
+41 | from cuk_assistant.llm.pool import LLMProviderPool
+   |
+
+F401 [*] `cuk_assistant.pipeline.orchestrator.CitationCard` imported but unused
+  --> tests/unit/test_factory_and_orchestrator.py:43:49
+   |
+41 | from cuk_assistant.llm.pool import LLMProviderPool
+42 | from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
+43 | from cuk_assistant.pipeline.orchestrator import CitationCard, RAGOrchestrator, TurnResult
+   |                                                 ^^^^^^^^^^^^
+44 | from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType
+45 | from cuk_assistant.schemas.llm import AnswerWithCitations
+   |
+help: Remove unused import: `cuk_assistant.pipeline.orchestrator.CitationCard`
+   |
+42 | from cuk_assistant.observability.in_memory_sink import InMemoryTelemetrySink
+   - from cuk_assistant.pipeline.orchestrator import CitationCard, RAGOrchestrator, TurnResult
+43 + from cuk_assistant.pipeline.orchestrator import RAGOrchestrator, TurnResult
+44 | from cuk_assistant.schemas.chunks import ChunkRecord, ChunkType
+   |
+
+F841 Local variable `result` is assigned to but never used
+   --> tests/unit/test_factory_and_orchestrator.py:398:9
+    |
+396 |         coordinator.candidates = []  # Empty corpus
+397 |
+398 |         result: TurnResult = await orchestrator.handle_turn(
+    |         ^^^^^^
+399 |             query="What is the syllabus for Astro-Physics?",
+400 |             slots={"program": "Astro-Physics", "batch_year": 2022, "semester": "Semester 1"},
+    |
+help: Remove assignment to unused variable `result`
+    |
+397 |
+    -         result: TurnResult = await orchestrator.handle_turn(
+398 +         await orchestrator.handle_turn(
+399 |             query="What is the syllabus for Astro-Physics?",
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+Found 21 errors.
+[*] 17 fixable with `--fix` (2 unsafe fixes available with `--fix --unsafe-fixes`).
+[2026-11-16 20:07:48] --- STEP 2: Running Unit Test Regression Suite ---
+/mnt/ubuntu_data/projects/cuk-rag-chatbot/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:300: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the "fixture" caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to "function" scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-9.2.0, pluggy-1.7.0
+rootdir: /mnt/ubuntu_data/projects/cuk-rag-chatbot
+configfile: pyproject.toml
+plugins: anyio-4.16.0, asyncio-1.4.1.post1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 602 items
+
+tests/unit/test_acceptance.py s.ssssssssss...s.s................         [  5%]
+tests/unit/test_api_chat_orchestrated.py .....                           [  6%]
+tests/unit/test_api_endpoints.py .....................                   [  9%]
+tests/unit/test_cache.py ..............                                  [ 12%]
+tests/unit/test_citation_verifier.py ........                            [ 13%]
+tests/unit/test_config.py ...................                            [ 16%]
+tests/unit/test_crawler_alignment.py ...................                 [ 19%]
+tests/unit/test_delta_detector.py ..........                             [ 21%]
+tests/unit/test_docling_adapter.py ........                              [ 22%]
+tests/unit/test_evaluator.py ....F...............                        [ 26%]
+tests/unit/test_factory_and_orchestrator.py ............                 [ 28%]
+tests/unit/test_failure_attribution.py .............................     [ 33%]
+tests/unit/test_fastembed_adapter.py .......                             [ 34%]
+tests/unit/test_flashrank_reranker.py ......                             [ 35%]
+tests/unit/test_hierarchical_chunker.py ..........                       [ 36%]
+tests/unit/test_ingestion_runner.py ..                                   [ 37%]
+tests/unit/test_input_guard.py ......................................... [ 44%]
+.............                                                            [ 46%]
+tests/unit/test_lancedb_store.py ........                                [ 47%]
+tests/unit/test_llm_clients.py ...................                       [ 50%]
+tests/unit/test_llm_pool.py .............                                [ 52%]
+tests/unit/test_metadata_normalizer.py ................................. [ 58%]
+................................................                         [ 66%]
+tests/unit/test_node_crawler.py ...........                              [ 68%]
+tests/unit/test_offline_parser.py ...........                            [ 69%]
+tests/unit/test_output_guard.py .............                            [ 72%]
+tests/unit/test_pdf_fact_extractor.py ........                           [ 73%]
+tests/unit/test_protocols_chunk.py ..............                        [ 75%]
+tests/unit/test_rate_limiter.py ........                                 [ 77%]
+tests/unit/test_reconciliation.py ...............                        [ 79%]
+tests/unit/test_retrieval_coordinator.py ...........                     [ 81%]
+tests/unit/test_retrieval_protocols.py ........                          [ 82%]
+tests/unit/test_router.py ........................................       [ 89%]
+tests/unit/test_schemas_metadata.py ..................                   [ 92%]
+tests/unit/test_session_store.py .........                               [ 93%]
+tests/unit/test_telemetry_adapters.py ..................                 [ 96%]
+tests/unit/test_url_utils.py ...................                         [100%]
+
+=================================== FAILURES ===================================
+______________________ test_is_chunk_relevant_irrelevant _______________________
+
+    
+    def test_is_chunk_relevant_irrelevant() -> None:
+        chunk = _make_dummy_chunk(
+            chunk_id="c1",
+            text="Tender notification for supply of laboratory equipment for physics lab.",
+            title="Procurement Tender Notice",
+            source_url="https://www.cukashmir.ac.in/tenders/tender1.pdf",
+>           page_url="https://www.cukashmir.ac.in/tenders",
+            doc_type="tender",
+        )
+E       AssertionError: assert not True
+E        +  where True = is_chunk_relevant(chunk=ScoredChunk(chunk=ChunkRecord(chunk_id='c1', doc_id='doc_001', chunk_index=0, chunk_type=<ChunkType.PARAGRAPH: 'paragr...nder1.pdf'}), score=0.85, dense_score=0.0, lexical_score=0.0, rrf_rank=None, scope_relaxed=False, regex_fallback=False), acceptable_patterns=['*admission*', '*hostel*'], expected_keywords=['refund', 'cancellation', 'hostel'])
+
+tests/unit/test_evaluator.py:169: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /mnt/ubuntu_data/projects/cuk-rag-chatbot/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_crawler_alignment.py::TestPdfExtractorAlignment::test_10_page_pdf_produces_single_document
+  /mnt/ubuntu_data/projects/cuk-rag-chatbot/.venv/lib/python3.12/site-packages/fitz/__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_evaluator.py::test_is_chunk_relevant_irrelevant - Asse...
+============ 1 failed, 588 passed, 13 skipped, 2 warnings in 34.65s ============
+[2026-11-16 20:08:26] --- STEP 3: Executing LanceDB Vector Hybrid Batch Indexing ---
+Starting hybrid vector indexing pipeline (LanceDB + FastEmbed)...
+  Input Chunks: 
+/mnt/ubuntu_data/projects/cuk-rag-chatbot/data/processed/chunks.jsonl
+  LanceDB Dir:  /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb
+  Table Name:   chunks
+  Batch Size:   64
+  Overwrite:    True
+20:08:31  INFO      cuk_assistant.ingestion.embedding.fastembed_adapter  Initializing FastEmbedAdapter model=BAAI/bge-small-en-v1.5 dimension=384 threads=None
+20:08:32  INFO      cuk_assistant.ingestion.cli.index  Removing existing table directory for overwrite: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance
+20:08:32  INFO      cuk_assistant.ingestion.cli.index  Removing existing parent table directory for overwrite: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/parent_sections.lance
+20:08:32  INFO      cuk_assistant.retrieval.lancedb_store  Opening LanceDB connection at /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb
+20:08:32  INFO      cuk_assistant.retrieval.lancedb_store  Creating LanceDB table 'chunks'
+20:08:32  INFO      cuk_assistant.retrieval.lancedb_store  Creating LanceDB table 'parent_sections'
+20:09:00  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:09:21  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:09:37  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:09:53  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:10:06  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:10:12  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:10:28  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:10:42  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:10:56  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:08  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:35  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:36  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:37  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:39  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:41  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:43  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:44  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:45  INFO      cuk_assistant.retrieval.lancedb_store  Adding 64 chunk records to table 'chunks'
+20:11:46  INFO      cuk_assistant.retrieval.lancedb_store  Adding 56 chunk records to table 'chunks'
+  Indexing chunks... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+20:11:46  INFO      cuk_assistant.retrieval.lancedb_store  Adding 686 parent sections to table 'parent_sections'
+20:11:46  WARNING   cuk_assistant.retrieval.lancedb_store  Failed to create Tantivy FTS index: lance error: Not found: mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/data/000110110110110111001010f8a6ac4b4880ce5a40e8f5bef8.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/local.rs:273:40
+20:11:46  WARNING   cuk_assistant.retrieval.lancedb_store  Failed to create scalar index on 'doc_id': lance error: Not found: mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/data/000110110110110111001010f8a6ac4b4880ce5a40e8f5bef8.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/local.rs:273:40
+20:11:46  WARNING   cuk_assistant.retrieval.lancedb_store  Failed to create scalar index on 'source_url': lance error: Not found: mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/data/000110110110110111001010f8a6ac4b4880ce5a40e8f5bef8.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/local.rs:273:40
+[2026-11-16T14:41:46Z WARN  lance::index::vector] Build Vector Index: training 9 of the 16 requested IVF partitions; column 'vector' holds 2480 vectors
+[2026-11-16T14:41:46Z WARN  lancedb::table] Failed to read full text search configuration for index 'text_idx': LanceError(IO): Generic N/A error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/metadata.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_reader.rs:335:56, /rustc/2d8144b7880597b6e6d3dfd63a9a9efae3f533d3/library/core/src/ops/function.rs:250:5
+[2026-11-16T14:41:46Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+20:11:46  WARNING   cuk_assistant.retrieval.lancedb_store  Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+
+Indexing completed successfully!
+  Total Chunks:        1208
+  Parent Sections:     686
+  Duration:            194.08s
+  Throughput:          6.2 chunks/sec
+  LanceDB Storage:     2.97 MB
+  Indices Built:       text_idx (FTS)
+  Test Query Latency:  65.63 ms (0 candidates found)
+[2026-11-16 20:11:48] --- STEP 4: Executing Golden Dataset Regression Benchmark ---
+[2026-11-16 20:11:48] Running cuk-eval benchmark...
+╭──────────────────────────────────────────────────╮
+│ CUK RAG Assistant — Benchmark Evaluation Harness │
+│ Dataset: evals/golden_dataset.jsonl | Top-K: 5   │
+╰──────────────────────────────────────────────────╯
+Loaded 55 test cases from evals/golden_dataset.jsonl.
+[2026-11-16T14:41:54Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+INFO:cuk_assistant.retrieval.coordinator:Low relevance (top_score=0.000 < 0.350) with detected code '5-year'. Triggering regex fallback.
+WARNING:cuk_assistant.retrieval.lancedb_store:Regex search error for pattern '5-year': lance error: Not found: mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/data/000110110110110111001010f8a6ac4b4880ce5a40e8f5bef8.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/local.rs:273:40
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+INFO:cuk_assistant.retrieval.coordinator:Low relevance (top_score=0.000 < 0.350) with detected code '10-point'. Triggering regex fallback.
+WARNING:cuk_assistant.retrieval.lancedb_store:Regex search error for pattern '10-point': lance error: Not found: mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/data/000110110110110111001010f8a6ac4b4880ce5a40e8f5bef8.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/local.rs:273:40
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:55Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:56Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:57Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+INFO:cuk_assistant.retrieval.coordinator:Low relevance (top_score=0.000 < 0.350) with detected code 'means-cum-merit'. Triggering regex fallback.
+WARNING:cuk_assistant.retrieval.lancedb_store:Regex search error for pattern 'means-cum-merit': lance error: Not found: mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/data/000110110110110111001010f8a6ac4b4880ce5a40e8f5bef8.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/local.rs:273:40
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+[2026-11-16T14:41:58Z WARN  lance_index::scalar::inverted::index::inverted_index] loading legacy FTS index
+WARNING:cuk_assistant.retrieval.lancedb_store:Hybrid search execution error: lance error: Not found: /mnt/ubuntu_data/projects/cuk-rag-chatbot/data/lancedb/chunks.lance/_indices/e96353f2-2b8c-4bd2-822c-e621d49ad250/tokens.lance, /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-io-14.0.2/src/object_store.rs:1721:12. Falling back to empty.
+  Evaluating QA benchmarks... (MISS eval_055) ━━━━━━━━━━━━━━━ 100% 55/55 0:00:03
+
+                    Evaluation Benchmark Summary (Top-K = 5)                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Metric                     ┃ Score / Result ┃ Target / Notes                 ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Retrieval Hit Rate@5       │ 0.0%           │ 0 / 55 queries hit             │
+│ Mean Reciprocal Rank (MRR) │ 0.000          │ Higher is better (1.0 = top    │
+│                            │                │ rank)                          │
+│ Mean Keyword Recall        │ 0.0%           │ Proportion of expected         │
+│                            │                │ keywords in retrieved chunks   │
+│ Slot Extraction Accuracy   │ 55.0%          │ Faceted slot filler precision  │
+│                            │                │ across entities                │
+└────────────────────────────┴────────────────┴────────────────────────────────┘
+
+Diagnostic Failure Attribution Breakdown
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic Code ┃ Count ┃ Percentage ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ RETRIEVAL_EMPTY │    55 │     100.0% │
+└─────────────────┴───────┴────────────┘
+[2026-11-16 20:11:59] --- Generating Final Pipeline Completion Report ---
+[2026-11-16 20:11:59] ==========================================================
+[2026-11-16 20:11:59] Automated execution completed. Report generated at reports/pipeline_completion_report.md.
+[2026-11-16 20:11:59] ==========================================================

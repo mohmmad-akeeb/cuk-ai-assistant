@@ -1,0 +1,55 @@
+# Git & Version Control
+.git/
+.gitignore
+.gitattributes
+
+# Antigravity & Agent Teamwork Metadata (Strict Protection)
+.agent/
+.agents/
+.kiroignore
+
+# Virtual Environments & Caches
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+
+# Raw Data, PDF Documents & Sensitive Caches (Protected Invariants)
+data/cache/
+data/raw/
+data/logs/
+data/processed/
+data/lancedb/
+data/sessions.db*
+*.pdf
+
+# Environment Secrets
+.env
+.env.*
+!.env.example
+secrets/
+private/
+*.pem
+*.key
+id_rsa*
+
+# Documentation & Evaluation Artifacts
+reports/
+tests/
+docs/
+documents/
+*.log
+*.sqlite3
+
+# Markdown (Keep chainlit.md and README.md)
+*.md
+!README.md
+!chainlit.md

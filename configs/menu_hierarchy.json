@@ -1,0 +1,213 @@
+{
+  "version": "1.0",
+  "categories": [
+    {
+      "id": "admissions",
+      "title": "Admissions & Intake",
+      "icon": "graduation-cap",
+      "prompts": [
+        "What is the admission procedure for PG programmes via CUET?",
+        "What are the hostel fee details for first-semester students?",
+        "What is the approved seat intake matrix for B.Tech, MBA, and PG courses?",
+        "Where can I find the admission prospectus and eligibility criteria?",
+        "What are the latest CUET UG admission cut-offs and selection lists?"
+      ],
+      "items": [
+        {
+          "id": "admissions_pg_programmes_via_cuet",
+          "title": "PG Programmes via CUET",
+          "default_query": "What is the admission procedure for PG programmes via CUET?",
+          "suggested_slots": {
+            "doc_type": "admission",
+            "stage": "counselling"
+          }
+        },
+        {
+          "id": "admissions_hostel_fee_details",
+          "title": "Hostel Fee Details",
+          "default_query": "What are the hostel fee details for first-semester students?",
+          "suggested_slots": {
+            "category": "hostel",
+            "doc_type": "fee_structure"
+          }
+        },
+        {
+          "id": "admissions_seat_intake_matrix",
+          "title": "Seat Intake Matrix",
+          "default_query": "What is the approved seat intake matrix for B.Tech, MBA, and PG courses?",
+          "suggested_slots": {
+            "doc_type": "admission",
+            "stage": "seat_matrix"
+          }
+        },
+        {
+          "id": "admissions_prospectus_eligibility",
+          "title": "Prospectus & Eligibility",
+          "default_query": "Where can I find the admission prospectus and eligibility criteria?",
+          "suggested_slots": {
+            "doc_type": "admission",
+            "stage": "general"
+          }
+        },
+        {
+          "id": "admissions_cuet_ug_cut_offs",
+          "title": "CUET UG Cut-Offs",
+          "default_query": "What are the latest CUET UG admission cut-offs and selection lists?",
+          "suggested_slots": {
+            "doc_type": "admission",
+            "stage": "cut_off"
+          }
+        }
+      ]
+    },
+    {
+      "id": "examinations",
+      "title": "Examinations & Results",
+      "icon": "file-text",
+      "prompts": [
+        "Show me the latest exam date sheets and notifications.",
+        "How can I check semester results and re-evaluation notices?",
+        "What is the procedure to apply for re-evaluation or answer script scrutiny?",
+        "When and where can students download examination admit cards?"
+      ],
+      "items": [
+        {
+          "id": "examinations_date_sheets_notification",
+          "title": "Date Sheets & Notifications",
+          "default_query": "Show me the latest exam date sheets and notifications.",
+          "suggested_slots": {
+            "doc_type": "notice",
+            "subject_tags": [
+              "Exam"
+            ]
+          }
+        },
+        {
+          "id": "examinations_semester_examination_res",
+          "title": "Semester Examination Results",
+          "default_query": "How can I check semester results and re-evaluation notices?",
+          "suggested_slots": {
+            "doc_type": "result"
+          }
+        },
+        {
+          "id": "examinations_re_evaluation_procedure",
+          "title": "Re-Evaluation Procedure",
+          "default_query": "What is the procedure to apply for re-evaluation or answer script scrutiny?",
+          "suggested_slots": {
+            "doc_type": "result",
+            "result_type": "re_evaluation"
+          }
+        },
+        {
+          "id": "examinations_admit_card_downloads",
+          "title": "Admit Card Downloads",
+          "default_query": "When and where can students download examination admit cards?",
+          "suggested_slots": {
+            "doc_type": "notice",
+            "subject_tags": [
+              "Admit Card"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "academics",
+      "title": "Academics & Syllabi",
+      "icon": "book-open",
+      "prompts": [
+        "What is the detailed syllabus for B.Tech Computer Science & Engineering?",
+        "Where can I find course lists and curriculum details by department?",
+        "What are the passing criteria and attendance rules under CUK ordinances?",
+        "What programmes and course structures are offered under CBCS?"
+      ],
+      "items": [
+        {
+          "id": "academics_b_tech_cse_syllabus",
+          "title": "B.Tech CSE Syllabus",
+          "default_query": "What is the detailed syllabus for B.Tech Computer Science & Engineering?",
+          "suggested_slots": {
+            "doc_type": "syllabus",
+            "program": "B.Tech CSE"
+          }
+        },
+        {
+          "id": "academics_department_course_lists",
+          "title": "Department Course Lists",
+          "default_query": "Where can I find course lists and curriculum details by department?",
+          "suggested_slots": {
+            "doc_type": "syllabus"
+          }
+        },
+        {
+          "id": "academics_academic_ordinances_rule",
+          "title": "Academic Ordinances & Rules",
+          "default_query": "What are the passing criteria and attendance rules under CUK ordinances?",
+          "suggested_slots": {
+            "doc_type": "ordinance"
+          }
+        },
+        {
+          "id": "academics_cbcs_course_structure",
+          "title": "CBCS Course Structure",
+          "default_query": "What programmes and course structures are offered under CBCS?",
+          "suggested_slots": {
+            "doc_type": "ordinance"
+          }
+        }
+      ]
+    },
+    {
+      "id": "campus",
+      "title": "Campus & Student Services",
+      "icon": "building",
+      "prompts": [
+        "What are the hostel fee details and accommodation facilities for students?",
+        "What are the transport and bus route facilities for Central University of Kashmir?",
+        "How do I access Central Library facilities and digital catalog resources?",
+        "What scholarships and financial assistance schemes are available for students?"
+      ],
+      "items": [
+        {
+          "id": "campus_hostel_facilities_fees",
+          "title": "Hostel Facilities & Fees",
+          "default_query": "What are the hostel fee details and accommodation facilities for students?",
+          "suggested_slots": {
+            "doc_type": "general",
+            "category": "hostel"
+          }
+        },
+        {
+          "id": "campus_transport_bus_routes",
+          "title": "Transport & Bus Routes",
+          "default_query": "What are the transport and bus route facilities for Central University of Kashmir?",
+          "suggested_slots": {
+            "doc_type": "general",
+            "category": "transport"
+          }
+        },
+        {
+          "id": "campus_central_library_access",
+          "title": "Central Library Access",
+          "default_query": "How do I access Central Library facilities and digital catalog resources?",
+          "suggested_slots": {
+            "doc_type": "general",
+            "category": "library"
+          }
+        },
+        {
+          "id": "campus_scholarships_financial_a",
+          "title": "Scholarships & Financial Aid",
+          "default_query": "What scholarships and financial assistance schemes are available for students?",
+          "suggested_slots": {
+            "doc_type": "notice",
+            "subject_tags": [
+              "Scholarship"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

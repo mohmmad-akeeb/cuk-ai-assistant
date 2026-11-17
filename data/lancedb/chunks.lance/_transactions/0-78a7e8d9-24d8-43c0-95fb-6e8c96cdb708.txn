@@ -1,0 +1,5 @@
+$78a7e8d9-24d8-43c0-95fb-6e8c96cdb708²Ächunk_id ÿÿÿÿÿÿÿÿÿ*string8doc_id ÿÿÿÿÿÿÿÿÿ*string8text ÿÿÿÿÿÿÿÿÿ*string82vector ÿÿÿÿÿÿÿÿÿ*fixed_size_list:float:3848*parent_chunk_id ÿÿÿÿÿÿÿÿÿ*string08!school ÿÿÿÿÿÿÿÿÿ*string08%
+department ÿÿÿÿÿÿÿÿÿ*string08-associated_departments ÿÿÿÿÿÿÿÿÿ*list8item *string08)is_university_wide	 ÿÿÿÿÿÿÿÿÿ*bool8!doc_type
+ ÿÿÿÿÿÿÿÿÿ*string8#
+source_url ÿÿÿÿÿÿÿÿÿ*string8!page_url ÿÿÿÿÿÿÿÿÿ*string8title ÿÿÿÿÿÿÿÿÿ*string8#chunk_index ÿÿÿÿÿÿÿÿÿ*int328#
+chunk_type ÿÿÿÿÿÿÿÿÿ*string8#token_count ÿÿÿÿÿÿÿÿÿ*int328#page_number ÿÿÿÿÿÿÿÿÿ*int328&metadata_json ÿÿÿÿÿÿÿÿÿ*string8

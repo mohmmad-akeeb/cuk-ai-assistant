@@ -1,0 +1,30 @@
+# Kiro ignore file (gitignore syntax)
+# Requires ".kiroignore" in Settings > Agent Ignore Files (kiroAgent.agentIgnoreFiles)
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+credentials.json
+secrets/
+private/
+
+# Caches and generated output
+.cache/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+node_modules/
+dist/
+build/
+.next/
+coverage/
+
+# Documents
+*.pdf
+# [PATH/TO/PDF/FOLDER]/
+
+# Add your own patterns below

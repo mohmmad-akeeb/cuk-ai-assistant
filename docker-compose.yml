@@ -1,0 +1,89 @@
+services:
+  # ── Service 1: FastAPI REST & SSE Streaming Backend ──────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cuk-assistant-api
+    restart: unless-stopped
+    command: ["uvicorn", "cuk_assistant.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+    ports:
+      - "8000:8000"
+    environment:
+      - CONTACT_EMAIL=${CONTACT_EMAIL:-cuk-rag-student@cukashmir.ac.in}
+      - BASE_URL=${BASE_URL:-https://www.cukashmir.ac.in}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LANCEDB_DIR=/app/data/lancedb
+      - SQLITE_DB_PATH=/app/data/sessions.db
+      - FASTEMBED_CACHE_PATH=/opt/model_cache/fastembed
+      - FLASHRANK_CACHE_PATH=/opt/model_cache/flashrank
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GROQ_MODEL=${GROQ_MODEL:-llama-3.3-70b-versatile}
+      - GROQ_GUARD_MODEL=${GROQ_GUARD_MODEL:-llama-guard-3-8b}
+      - LOGFIRE_TOKEN=${LOGFIRE_TOKEN:-}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+      - PHOENIX_COLLECTOR_ENDPOINT=${PHOENIX_COLLECTOR_ENDPOINT:-}
+    volumes:
+      - cuk_data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - cuk_network
+
+  # ── Service 2: Chainlit Interactive Web UI ───────────────────────────────────
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cuk-assistant-ui
+    restart: unless-stopped
+    command: ["python", "-m", "chainlit", "run", "cuk_assistant/ui/app.py", "--host", "0.0.0.0", "--port", "8001"]
+    ports:
+      - "8001:8001"
+    environment:
+      - CHAINLIT_PORT=8001
+      - CHAINLIT_HOST=0.0.0.0
+      - CONTACT_EMAIL=${CONTACT_EMAIL:-cuk-rag-student@cukashmir.ac.in}
+      - BASE_URL=${BASE_URL:-https://www.cukashmir.ac.in}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LANCEDB_DIR=/app/data/lancedb
+      - SQLITE_DB_PATH=/app/data/sessions.db
+      - FASTEMBED_CACHE_PATH=/opt/model_cache/fastembed
+      - FLASHRANK_CACHE_PATH=/opt/model_cache/flashrank
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GROQ_MODEL=${GROQ_MODEL:-llama-3.3-70b-versatile}
+      - GROQ_GUARD_MODEL=${GROQ_GUARD_MODEL:-llama-guard-3-8b}
+      - LOGFIRE_TOKEN=${LOGFIRE_TOKEN:-}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+      - PHOENIX_COLLECTOR_ENDPOINT=${PHOENIX_COLLECTOR_ENDPOINT:-}
+    volumes:
+      - cuk_data:/app/data
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - cuk_network
+
+volumes:
+  cuk_data:
+    driver: local
+
+networks:
+  cuk_network:
+    driver: bridge
