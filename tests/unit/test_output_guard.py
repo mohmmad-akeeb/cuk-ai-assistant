@@ -198,7 +198,7 @@ class TestGuardrailProtocolConformance:
     assert isinstance(composite, GuardrailProtocol)
 
         # Test input path
-        in_res = composite.validate_input("What is the fee for MBA at CUK?")
+    in_res = composite.validate_input("What is the fee for MBA at CUK?")
         assert in_res.is_safe is True
         assert in_res.is_in_domain is True
 
