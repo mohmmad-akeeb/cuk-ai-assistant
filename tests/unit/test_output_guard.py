@@ -192,7 +192,9 @@ class TestGuardrailProtocolConformance:
     """Verify runtime conformance with GuardrailProtocol."""
 
     def test_composite_guardrail_satisfies_protocol(self) -> None:
-        composite = CompositeGuardrail(input_guard=None, output_guard=None)
+        from cuk_assistant.guardrails.subsystems.input_guard import InputGuard
+    from cuk_assistant.guardrails.subsystems.output_guard import OutputGuard
+    composite = CompositeGuardrail(input_guard=InputGuard(), output_guard=OutputGuard())
         assert isinstance(composite, GuardrailProtocol)
 
         # Test input path
