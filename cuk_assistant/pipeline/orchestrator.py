@@ -32,11 +32,8 @@ from cuk_assistant.core.protocols.llm import LLMClientProtocol
 from cuk_assistant.core.protocols.session import MessageRecord, SessionStoreProtocol
 from cuk_assistant.core.protocols.telemetry import (
     FailureDiagnosticCode,
-    FailureEvent,
-    SpanAttributes,
     TelemetrySinkProtocol,
 )
-from cuk_assistant.observability.failure_attribution import DiagnosticAttributor
 from cuk_assistant.schemas.chat import CitationCard, TurnResult
 from cuk_assistant.schemas.llm import AnswerWithCitations
 
@@ -105,23 +102,11 @@ class RAGOrchestrator:
         }
         if self.telemetry_sink is not None:
             try:
-                if hasattr(self.telemetry_sink, "tag_failure"):
-                    self.telemetry_sink.tag_failure(
-                        trace_id=trace_id,
-                        diagnostic_code=code,
-                        details=full_details,
-                    )
-                elif hasattr(self.telemetry_sink, "record_failure"):
-                    meta = DiagnosticAttributor.get_metadata(code)
-                    event = FailureEvent(
-                        trace_id=trace_id,
-                        diagnostic_code=code,
-                        component=component,
-                        error_message=error_message,
-                        remediation_hint=meta.remediation_action,
-                        details=details or {},
-                    )
-                    self.telemetry_sink.record_failure(event)
+                self.telemetry_sink.tag_failure(
+                    trace_id=trace_id,
+                    diagnostic_code=code,
+                    details=full_details,
+                )
             except Exception as exc:
                 logger.warning("Telemetry tag_failure failed (failing open): %s", exc)
 
@@ -164,18 +149,6 @@ class RAGOrchestrator:
                     attributes=attrs,
                     duration_ms=duration_ms,
                 )
-            except TypeError:
-                try:
-                    span = SpanAttributes(
-                        trace_id=trace_id,
-                        component=component,
-                        duration_ms=duration_ms,
-                        span_name=span_name,
-                        attributes=attrs,
-                    )
-                    self.telemetry_sink.log_span(span)
-                except Exception as exc:
-                    logger.warning("Telemetry log_span failed: %s", exc)
             except Exception as exc:
                 logger.warning("Telemetry log_span failed: %s", exc)
 
@@ -311,12 +284,7 @@ class RAGOrchestrator:
         # Step 1: Input Guardrail Check
         t0 = time.perf_counter()
         if self.input_guard is not None:
-            if hasattr(self.input_guard, "validate_query"):
-                guard_result = self.input_guard.validate_query(clean_query)
-            elif hasattr(self.input_guard, "validate_input"):
-                guard_result = self.input_guard.validate_input(clean_query)
-            else:
-                guard_result = self.input_guard.validate(clean_query)
+            guard_result = self.input_guard.validate(clean_query)
 
             self._record_span(
                 trace_id=trace_id,
@@ -520,11 +488,13 @@ class RAGOrchestrator:
             )
             diagnostic_code = FailureDiagnosticCode.RETRIEVAL_EMPTY.value
 
-        # Prepare context chunks for LLM
+        # Prepare context chunks for LLM (retrieval returns ScoredChunk with .chunk)
         context_payload: list[dict[str, Any]] = []
         for c in retrieved_chunks:
-            if hasattr(c, "chunk"):
-                rec = c.chunk
+            rec = c.chunk
+            if isinstance(rec, dict):
+                context_payload.append(rec)
+            else:
                 context_payload.append(
                     {
                         "chunk_id": rec.chunk_id,
@@ -535,14 +505,6 @@ class RAGOrchestrator:
                         "heading_path": getattr(rec, "heading_path", []),
                         "metadata": getattr(rec, "metadata", {}),
                     }
-                )
-            elif hasattr(c, "model_dump"):
-                context_payload.append(c.model_dump())
-            elif isinstance(c, dict):
-                context_payload.append(c)
-            else:
-                context_payload.append(
-                    {"chunk_id": getattr(c, "chunk_id", "chunk"), "text": str(c)}
                 )
 
         # Step 5: LLM Generation

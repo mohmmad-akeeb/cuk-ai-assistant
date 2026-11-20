@@ -133,15 +133,6 @@ class TelemetrySinkProtocol(Protocol):
         """Alias for log_span for standardized span recording."""
         ...
 
-    def record_metric(
-        self,
-        name: str,
-        value: float,
-        attributes: dict[str, Any] | None = None,
-    ) -> None:
-        """Record a numerical metric (latency, token count, relevance score)."""
-        ...
-
     def flush(self) -> None:
         """Flush pending batches/events to destination collectors."""
         ...

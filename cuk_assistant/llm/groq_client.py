@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import os
-from collections.abc import AsyncIterator
 from typing import Any
 
 import httpx
@@ -182,71 +181,6 @@ class GroqClient:
             raise LLMFormatError(
                 f"Failed to parse AnswerWithCitations from Groq response: {exc}"
             ) from exc
-
-    async def generate_stream(
-        self,
-        query: str,
-        context_chunks: list[dict[str, Any]],
-        chat_history: list[dict[str, str]],
-        system_persona: str | None = None,
-    ) -> AsyncIterator[str]:
-        """Stream generated text tokens using Groq completions streaming."""
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}",
-        }
-
-        messages = self._build_messages(
-            query=query,
-            context_chunks=context_chunks,
-            chat_history=chat_history,
-            system_persona=system_persona,
-            enforce_json=False,
-        )
-
-        payload = {
-            "model": self.model,
-            "messages": messages,
-            "stream": True,
-            "temperature": 0.2,
-        }
-
-        client = self._get_client()
-        try:
-            async with client.stream("POST", self.base_url, json=payload, headers=headers) as resp:
-                if resp.status_code == 429:
-                    body = await resp.aread()
-                    raise RateLimitError(
-                        f"Groq 429 Rate Limit Exceeded: {body.decode(errors='replace')}"
-                    )
-                if resp.status_code in (502, 503, 504):
-                    body = await resp.aread()
-                    raise ServiceUnavailableError(
-                        f"Groq Service Unavailable ({resp.status_code}): {body.decode(errors='replace')}"
-                    )
-                resp.raise_for_status()
-
-                async for line in resp.aiter_lines():
-                    line = line.strip()
-                    if not line.startswith("data:"):
-                        continue
-                    raw_data = line[5:].strip()
-                    if not raw_data or raw_data == "[DONE]":
-                        continue
-                    try:
-                        chunk_obj = json.loads(raw_data)
-                    except json.JSONDecodeError:
-                        continue
-
-                    choices = chunk_obj.get("choices", [])
-                    if choices:
-                        delta = choices[0].get("delta", {})
-                        token = delta.get("content", "")
-                        if token:
-                            yield token
-        except httpx.RequestError as exc:
-            raise ServiceUnavailableError(f"Groq connection error: {exc}") from exc
-
 
 # Runtime protocol check
 _: type[LLMClientProtocol] = GroqClient

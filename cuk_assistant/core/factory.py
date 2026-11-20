@@ -31,9 +31,6 @@ from cuk_assistant.core.registry import (
     get_vector_store_cls,
 )
 from cuk_assistant.guardrails.subsystems import (
-    CitationVerifier,
-    CompositeGuardrail,
-    GuardrailProtocol,
     InputGuard,
     OutputGuard,
     VerbatimCitationVerifier,
@@ -210,28 +207,7 @@ def create_output_guard(**kwargs: Any) -> OutputGuard:
 
 def create_citation_verifier(**kwargs: Any) -> VerbatimCitationVerifier:
     """Instantiate deterministic verbatim citation verifier."""
-    return CitationVerifier(**kwargs)
-
-
-def create_guardrails(
-    **kwargs: Any,
-) -> tuple[GuardrailProtocol, OutputGuard, VerbatimCitationVerifier]:
-    """Assemble and return composite guardrail, output guard, and citation verifier."""
-    input_guard = kwargs.get("input_guard") or create_input_guard(
-        **kwargs.get("input_guard_kwargs", {})
-    )
-    output_guard = kwargs.get("output_guard") or create_output_guard(
-        **kwargs.get("output_guard_kwargs", {})
-    )
-    citation_verifier = kwargs.get("citation_verifier") or create_citation_verifier(
-        **kwargs.get("verifier_kwargs", {})
-    )
-
-    composite = CompositeGuardrail(
-        input_guard=input_guard,
-        output_guard=output_guard,
-    )
-    return composite, output_guard, citation_verifier
+    return VerbatimCitationVerifier(**kwargs)
 
 
 # ---------------------------------------------------------------------------
@@ -360,7 +336,6 @@ def create_rag_orchestrator(
 __all__ = [
     "create_citation_verifier",
     "create_embedding_model",
-    "create_guardrails",
     "create_input_guard",
     "create_llm_pool",
     "create_output_guard",

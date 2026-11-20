@@ -102,12 +102,3 @@ class SessionStoreProtocol(Protocol):
     ) -> None:
         """Persist compressed conversation history summary."""
         ...
-
-    def check_and_increment_rate_limit(
-        self,
-        ip_hash: str,
-        max_requests: int = 20,
-        window_seconds: int = 3600,
-    ) -> tuple[bool, int, int]:
-        """Check rate limit for client IP. Returns: (is_allowed, current_count, remaining_count)."""
-        ...

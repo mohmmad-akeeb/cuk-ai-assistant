@@ -285,52 +285,6 @@ class PhoenixTelemetrySink:
         except Exception as exc:
             logger.warning("PhoenixTelemetrySink.record_feedback failed (fail-open): %s", exc)
 
-    def record_metric(
-        self,
-        name: str,
-        value: float,
-        attributes: dict[str, Any] | None = None,
-    ) -> None:
-        """Record evaluation/numerical metric as an evaluation span."""
-        if not self._is_enabled:
-            return
-
-        try:
-            attrs_dict = dict(attributes or {})
-            tid = _to_otlp_id(attrs_dict.get("trace_id"), hex_len=32)
-            sid = _to_otlp_id(uuid.uuid4().hex, hex_len=16)
-            now_ns = int(time.time() * 1e9)
-
-            otlp_attrs = [
-                {"key": "openinference.span.kind", "value": {"stringValue": "EVALUATOR"}},
-                {"key": "evaluation.name", "value": {"stringValue": name}},
-                {"key": "evaluation.score", "value": {"doubleValue": float(value)}},
-            ]
-            for k, v in attrs_dict.items():
-                if k != "trace_id" and v is not None:
-                    otlp_attrs.append({"key": f"metric.{k}", "value": _to_any_value(v)})
-
-            span_record = {
-                "traceId": tid,
-                "spanId": sid,
-                "name": f"metric:{name}",
-                "kind": 1,
-                "startTimeUnixNano": str(now_ns),
-                "endTimeUnixNano": str(now_ns + 1_000_000),
-                "attributes": otlp_attrs,
-                "status": {"code": 1},
-            }
-
-            with self._lock:
-                self._spans.append(span_record)
-                should_flush = len(self._spans) >= self.max_batch_size
-
-            if should_flush:
-                self.flush()
-
-        except Exception as exc:
-            logger.warning("PhoenixTelemetrySink.record_metric failed (fail-open): %s", exc)
-
     def flush(self) -> None:
         """Flush queued OTLP spans to Arize Phoenix collector endpoint."""
         if not self._is_enabled or not self.endpoint:

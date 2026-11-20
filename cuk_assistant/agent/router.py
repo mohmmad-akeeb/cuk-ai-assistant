@@ -320,11 +320,3 @@ class AdaptiveRouter:
             extracted_entities=extracted,
             reason="General university inquiry ready for hybrid retrieval",
         )
-
-    async def route_async(
-        self,
-        query: str,
-        session_slots: dict[str, Any] | None = None,
-    ) -> RoutingDecision:
-        """Asynchronous routing evaluation."""
-        return self.route(query, session_slots=session_slots)

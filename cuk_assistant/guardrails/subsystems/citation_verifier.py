@@ -104,7 +104,3 @@ class VerbatimCitationVerifier:
             retrieved_contexts=contexts,
             min_snippet_chars=threshold,
         )
-
-class CitationVerifier(VerbatimCitationVerifier):
-    """Wrapper for backward compatibility."""
-    pass

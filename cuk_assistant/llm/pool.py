@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import logging
 import time
-from collections.abc import AsyncIterator, Callable, Sequence
+from collections.abc import Callable, Sequence
 from enum import StrEnum
 from typing import Any
 
@@ -235,65 +235,6 @@ class LLMProviderPool:
             message=f"All LLM providers exhausted: {last_exception}",
             diagnostic_code="LLM_EXTRACTION_FAILURE",
         )
-
-    async def generate_stream(
-        self,
-        query: str,
-        context_chunks: list[dict[str, Any]],
-        chat_history: list[dict[str, str]],
-        system_persona: str | None = None,
-    ) -> AsyncIterator[str]:
-        """Stream generated tokens with transparent failover before first token yield."""
-        tried_providers: set[str] = set()
-        last_exception: Exception | None = None
-
-        for _ in range(len(self.providers)):
-            try:
-                provider, breaker = self._select_next_healthy_provider(skip_names=tried_providers)
-            except ServiceUnavailableError as pool_exc:
-                if last_exception is not None:
-                    raise last_exception from pool_exc
-                raise pool_exc from None
-
-            tried_providers.add(provider.provider_name)
-            stream_iter = provider.generate_stream(
-                query=query,
-                context_chunks=context_chunks,
-                chat_history=chat_history,
-                system_persona=system_persona,
-            )
-
-            try:
-                # Probe first chunk to verify stream initialized without HTTP 429/503
-                first_chunk = await anext(stream_iter)
-            except (StopAsyncIteration, StopIteration):
-                breaker.record_success()
-                return
-            except Exception as exc:
-                last_exception = exc
-                if self._should_trip_breaker(exc):
-                    breaker.record_failure(force_open=True)
-                    logger.warning(
-                        "Streaming for provider '%s' failed at start: %s; failing over.",
-                        provider.provider_name,
-                        type(exc).__name__,
-                    )
-                    continue
-                raise
-
-            # Successful start
-            breaker.record_success()
-            yield first_chunk
-
-            async for chunk in stream_iter:
-                yield chunk
-            return
-
-        raise ServiceUnavailableError(
-            message=f"All LLM providers exhausted during stream initialization: {last_exception}",
-            diagnostic_code="LLM_EXTRACTION_FAILURE",
-        )
-
 
 # Runtime protocol check
 _: type[LLMClientProtocol] = LLMProviderPool

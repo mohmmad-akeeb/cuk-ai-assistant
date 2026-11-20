@@ -371,45 +371,6 @@ class LangfuseTelemetrySink:
         except Exception as exc:
             logger.warning("LangfuseTelemetrySink.record_feedback failed (fail-open): %s", exc)
 
-    def record_metric(
-        self,
-        name: str,
-        value: float,
-        attributes: dict[str, Any] | None = None,
-    ) -> None:
-        """Record numerical metric (latency, TTFT, token count, relevance score)."""
-        if not self._is_enabled:
-            return
-
-        try:
-            attrs = dict(attributes or {})
-            trace_id = _sanitize_trace_id(attrs.get("trace_id"))
-            now_iso = datetime.now(UTC).isoformat()
-
-            score_event = {
-                "id": str(uuid.uuid4()),
-                "type": "score-create",
-                "timestamp": now_iso,
-                "body": {
-                    "id": str(uuid.uuid4()),
-                    "traceId": trace_id,
-                    "name": name,
-                    "value": float(value),
-                    "dataType": "NUMERIC",
-                    "metadata": attrs,
-                },
-            }
-
-            with self._lock:
-                self._batch.append(score_event)
-                should_flush = len(self._batch) >= self.max_batch_size
-
-            if should_flush:
-                self.flush()
-
-        except Exception as exc:
-            logger.warning("LangfuseTelemetrySink.record_metric failed (fail-open): %s", exc)
-
     def flush(self) -> None:
         """Flush queued events to Langfuse batch ingestion endpoint."""
         if not self._is_enabled:

@@ -50,7 +50,6 @@ class InMemoryTelemetrySink:
         self._spans: deque[TelemetryRecord] = deque(maxlen=max_records)
         self._failures: deque[TelemetryRecord] = deque(maxlen=max_records)
         self._feedbacks: deque[TelemetryRecord] = deque(maxlen=max_records)
-        self._metrics: deque[TelemetryRecord] = deque(maxlen=max_records)
 
     def log_span(
         self,
@@ -95,25 +94,6 @@ class InMemoryTelemetrySink:
     ) -> None:
         """Record timed execution span (TelemetrySinkProtocol method)."""
         self.log_span(name=name, attributes=attributes, duration_ms=duration_ms)
-
-    def record_metric(
-        self,
-        name: str,
-        value: float,
-        attributes: dict[str, Any] | None = None,
-    ) -> None:
-        """Record numerical metric (latency, token count, relevance score) fail-open."""
-        try:
-            record = TelemetryRecord(
-                name=name,
-                value=float(value),
-                attributes=dict(attributes or {}),
-                timestamp=datetime.now(UTC),
-            )
-            with self._lock:
-                self._metrics.append(record)
-        except Exception as exc:
-            logger.warning("InMemoryTelemetrySink.record_metric failed (failing open): %s", exc)
 
     def flush(self) -> None:
         """Flush pending batches/events (no-op for in-memory)."""
@@ -189,20 +169,12 @@ class InMemoryTelemetrySink:
                 return [TelemetryRecord(fb) for fb in self._feedbacks]
             return [TelemetryRecord(fb) for fb in self._feedbacks if fb.get("trace_id") == trace_id]
 
-    def get_metrics(self, name: str | None = None) -> list[TelemetryRecord]:
-        """Return a snapshot copy of recorded metrics, optionally filtered by name."""
-        with self._lock:
-            if name is None:
-                return [TelemetryRecord(m) for m in self._metrics]
-            return [TelemetryRecord(m) for m in self._metrics if m.get("name") == name]
-
     def clear(self) -> None:
-        """Clear all stored spans, failures, feedbacks, and metrics."""
+        """Clear all stored spans, failures, and feedbacks."""
         with self._lock:
             self._spans.clear()
             self._failures.clear()
             self._feedbacks.clear()
-            self._metrics.clear()
 
     def count_spans(self) -> int:
         """Return total count of recorded spans."""
@@ -219,17 +191,10 @@ class InMemoryTelemetrySink:
         with self._lock:
             return len(self._feedbacks)
 
-    def count_metrics(self) -> int:
-        """Return total count of recorded metrics."""
-        with self._lock:
-            return len(self._metrics)
-
     def __len__(self) -> int:
         """Return sum of all stored records."""
         with self._lock:
-            return (
-                len(self._spans) + len(self._failures) + len(self._feedbacks) + len(self._metrics)
-            )
+            return len(self._spans) + len(self._failures) + len(self._feedbacks)
 
 
 # Compile-time protocol compliance verification

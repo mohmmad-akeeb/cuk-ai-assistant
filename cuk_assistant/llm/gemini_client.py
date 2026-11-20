@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import os
-from collections.abc import AsyncIterator
 from typing import Any
 
 import httpx
@@ -289,70 +288,6 @@ class GeminiClient:
             raise LLMFormatError(
                 f"Failed to parse AnswerWithCitations from Gemini response: {exc}"
             ) from exc
-
-    async def generate_stream(
-        self,
-        query: str,
-        context_chunks: list[dict[str, Any]],
-        chat_history: list[dict[str, str]],
-        system_persona: str | None = None,
-    ) -> AsyncIterator[str]:
-        """Stream generated text tokens using Gemini streamGenerateContent?alt=sse."""
-        url = self._base_url.format(model=self.model, method="streamGenerateContent")
-        headers = {"Content-Type": "application/json"}
-        if self.api_key:
-            headers["x-goog-api-key"] = self.api_key
-
-        payload = self._build_request_payload(
-            query=query,
-            context_chunks=context_chunks,
-            chat_history=chat_history,
-            system_persona=system_persona,
-            enforce_json_schema=False,
-        )
-
-        client = self._get_client()
-        params: dict[str, str] = {"alt": "sse"}
-        if self.api_key:
-            params["key"] = self.api_key
-
-        try:
-            async with client.stream(
-                "POST", url, json=payload, headers=headers, params=params
-            ) as resp:
-                if resp.status_code == 429:
-                    body = await resp.aread()
-                    raise RateLimitError(
-                        f"Gemini 429 Rate Limit Exceeded: {body.decode(errors='replace')}"
-                    )
-                if resp.status_code in (502, 503, 504):
-                    body = await resp.aread()
-                    raise ServiceUnavailableError(
-                        f"Gemini Service Unavailable ({resp.status_code}): {body.decode(errors='replace')}"
-                    )
-                resp.raise_for_status()
-
-                async for line in resp.aiter_lines():
-                    line = line.strip()
-                    if not line.startswith("data:"):
-                        continue
-                    raw_data = line[5:].strip()
-                    if not raw_data or raw_data == "[DONE]":
-                        continue
-                    try:
-                        chunk_obj = json.loads(raw_data)
-                    except json.JSONDecodeError:
-                        continue
-
-                    candidates = chunk_obj.get("candidates", [])
-                    for cand in candidates:
-                        for part in cand.get("content", {}).get("parts", []):
-                            token = part.get("text", "")
-                            if token:
-                                yield token
-        except httpx.RequestError as exc:
-            raise ServiceUnavailableError(f"Gemini connection error: {exc}") from exc
-
 
 # Runtime protocol check
 _: type[LLMClientProtocol] = GeminiClient

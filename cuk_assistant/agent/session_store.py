@@ -74,18 +74,6 @@ CREATE TABLE IF NOT EXISTS session_summaries (
 
 CREATE INDEX IF NOT EXISTS idx_summaries_session_recent
     ON session_summaries(session_id, created_at DESC);
-
--- IP rate limits table
-CREATE TABLE IF NOT EXISTS rate_limits (
-    ip_hash             TEXT NOT NULL,
-    window_start        TEXT NOT NULL,
-    request_count       INTEGER NOT NULL DEFAULT 1,
-    last_request_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (ip_hash, window_start)
-);
-
-CREATE INDEX IF NOT EXISTS idx_rate_limits_cleanup
-    ON rate_limits(window_start ASC);
 """
 
 
@@ -408,39 +396,6 @@ class SQLiteSessionStore(SessionStoreProtocol):
                 "UPDATE sessions SET summary = ?, last_active_at = ? WHERE session_id = ?",
                 (summary_text, now_iso, session_id),
             )
-
-    def check_and_increment_rate_limit(
-        self,
-        ip_hash: str,
-        max_requests: int = 20,
-        window_seconds: int = 3600,
-    ) -> tuple[bool, int, int]:
-        """Check rate limit for client IP. Returns: (is_allowed, current_count, remaining_count)."""
-        conn = self._get_connection()
-        now = datetime.now(UTC)
-        window_timestamp = int(now.timestamp() // window_seconds) * window_seconds
-        window_start = datetime.fromtimestamp(window_timestamp, tz=UTC).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-        now_iso = now.isoformat()
-
-        with conn:
-            cur = conn.execute(
-                "INSERT INTO rate_limits (ip_hash, window_start, request_count, last_request_at) "
-                "VALUES (?, ?, 1, ?) "
-                "ON CONFLICT(ip_hash, window_start) DO UPDATE SET "
-                "    request_count = rate_limits.request_count + 1, "
-                "    last_request_at = excluded.last_request_at "
-                "RETURNING request_count",
-                (ip_hash, window_start, now_iso),
-            )
-            row = cur.fetchone()
-            if not row:
-                raise RuntimeError("Failed to update rate limit record.")
-            current_count = int(row[0])
-            is_allowed = current_count <= max_requests
-            remaining_count = max(0, max_requests - current_count)
-            return is_allowed, current_count, remaining_count
 
     def close(self) -> None:
         """Close all connections held by this store instance."""

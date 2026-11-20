@@ -10,15 +10,13 @@ Provides:
 from __future__ import annotations
 
 import logging
-import os
 import re
 from typing import Any
 
-import httpx
 from pydantic import BaseModel, ConfigDict
 
+from cuk_assistant.core.protocols.telemetry import FailureDiagnosticCode
 from cuk_assistant.guardrails.subsystems.citation_verifier import verify_citations
-from cuk_assistant.guardrails.subsystems.input_guard import FailureDiagnosticCode
 
 logger = logging.getLogger(__name__)
 
@@ -145,12 +143,8 @@ class StudentPIIScrubber:
 
 
 class GroqLlamaGuardOutputRail:
-    """Evaluates output text for toxicity, hate speech, and defamation using Groq Llama Guard 3."""
+    """Local output toxicity safety rail (no remote calls)."""
 
-    DEFAULT_GROQ_API_URL: str = "https://api.groq.com/openai/v1/chat/completions"
-    DEFAULT_MODEL: str = "llama-guard-3-8b"
-
-    # Local fallback heuristics for severe toxicity, hate speech, and defamation
     _TOXICITY_PATTERNS: tuple[re.Pattern[str], ...] = (
         re.compile(
             r"\b(kill yourself|commit suicide|bomb the university|terrorist attack|"
@@ -159,105 +153,13 @@ class GroqLlamaGuardOutputRail:
         ),
     )
 
-    def __init__(
-        self,
-        api_key: str | None = None,
-        base_url: str = DEFAULT_GROQ_API_URL,
-        model: str = DEFAULT_MODEL,
-        timeout: float = 3.0,
-    ) -> None:
-        self.api_key = api_key or os.environ.get("GROQ_API_KEY")
-        self.base_url = base_url
-        self.model = model
-        self.timeout = timeout
-
-    def _local_scan(self, text: str) -> tuple[bool, str | None]:
+    def scan_output(self, text: str) -> tuple[bool, str | None]:
+        """Scan output text for severe toxicity / hate speech / defamation."""
         for pattern in self._TOXICITY_PATTERNS:
             match = pattern.search(text)
             if match:
                 return False, f"local_heuristic_toxicity:{match.group(0)}"
         return True, None
-
-    def scan_output(self, text: str) -> tuple[bool, str | None]:
-        """Synchronously scan output text for safety violations."""
-        safe_local, reason_local = self._local_scan(text)
-        if not safe_local:
-            return False, reason_local
-
-        if not self.api_key:
-            return True, None
-
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-        }
-        payload = {
-            "model": self.model,
-            "messages": [
-                {"role": "user", "content": "Query"},
-                {"role": "assistant", "content": text},
-            ],
-            "temperature": 0.0,
-        }
-
-        try:
-            with httpx.Client(timeout=self.timeout) as client:
-                response = client.post(self.base_url, headers=headers, json=payload)
-                if response.status_code == 200:
-                    data = response.json()
-                    content = (
-                        data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-                    )
-                    if content.lower().startswith("unsafe"):
-                        return False, content
-                    return True, None
-                else:
-                    logger.warning(
-                        "Groq API returned HTTP %s for output scan", response.status_code
-                    )
-                    return True, None
-        except Exception as e:
-            logger.warning("Groq output scan API failed (%s)", e)
-            return True, None
-
-    async def scan_output_async(self, text: str) -> tuple[bool, str | None]:
-        """Asynchronously scan output text for safety violations."""
-        safe_local, reason_local = self._local_scan(text)
-        if not safe_local:
-            return False, reason_local
-
-        if not self.api_key:
-            return True, None
-
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-        }
-        payload = {
-            "model": self.model,
-            "messages": [
-                {"role": "user", "content": "Query"},
-                {"role": "assistant", "content": text},
-            ],
-            "temperature": 0.0,
-        }
-
-        try:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
-                response = await client.post(self.base_url, headers=headers, json=payload)
-                if response.status_code == 200:
-                    data = response.json()
-                    content = (
-                        data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-                    )
-                    if content.lower().startswith("unsafe"):
-                        return False, content
-                    return True, None
-                else:
-                    return True, None
-        except Exception as e:
-            logger.warning("Groq async output scan failed (%s)", e)
-            return True, None
 
 
 class OutputGuard:
@@ -314,48 +216,6 @@ class OutputGuard:
         sanitized_text = self.pii_scrubber.scrub(generated_text)
 
         # 3. Verbatim Citation Verification
-        is_grounded, offending = verify_citations(
-            quoted_snippets=snippets,
-            retrieved_contexts=contexts,
-            min_snippet_chars=self.min_snippet_chars,
-        )
-
-        if not is_grounded:
-            return OutputGuardResult(
-                is_safe=True,
-                sanitized_text=sanitized_text,
-                is_verbatim_grounded=False,
-                diagnostic_code=FailureDiagnosticCode.LLM_HALLUCINATION.value,
-            )
-
-        return OutputGuardResult(
-            is_safe=True,
-            sanitized_text=sanitized_text,
-            is_verbatim_grounded=True,
-            diagnostic_code=None,
-        )
-
-    async def validate_and_scrub_async(
-        self,
-        generated_text: str,
-        quoted_snippets: list[str] | None = None,
-        context_chunks: list[Any] | None = None,
-    ) -> OutputGuardResult:
-        """Asynchronously validate, scrub PII, and verify citations for generated response."""
-        snippets = quoted_snippets or []
-        contexts = self._extract_context_strings(context_chunks or [])
-
-        is_safe, safety_reason = await self.safety_rail.scan_output_async(generated_text)
-        if not is_safe:
-            return OutputGuardResult(
-                is_safe=False,
-                sanitized_text=DEFAULT_UNSAFE_OUTPUT_REDACTION,
-                is_verbatim_grounded=False,
-                diagnostic_code=FailureDiagnosticCode.OUTPUT_SAFETY_VIOLATION.value,
-            )
-
-        sanitized_text = self.pii_scrubber.scrub(generated_text)
-
         is_grounded, offending = verify_citations(
             quoted_snippets=snippets,
             retrieved_contexts=contexts,
